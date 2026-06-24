@@ -16,6 +16,7 @@ import { Route as KnowledgeGraphRouteImport } from './routes/knowledge-graph'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DecisionRouteImport } from './routes/decision'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuditLogsRouteImport } from './routes/audit-logs'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TaxIndexRouteImport } from './routes/tax.index'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
@@ -57,6 +58,11 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuditLogsRoute = AuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -85,6 +91,7 @@ const LegalIdRoute = LegalIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
@@ -114,6 +122,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/audit-logs'
     | '/dashboard'
     | '/decision'
     | '/documents'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/audit-logs'
     | '/dashboard'
     | '/decision'
     | '/documents'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/audit-logs'
     | '/dashboard'
     | '/decision'
     | '/documents'
@@ -173,6 +185,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuditLogsRoute: typeof AuditLogsRoute
   DashboardRoute: typeof DashboardRoute
   DecisionRoute: typeof DecisionRoute
   DocumentsRoute: typeof DocumentsRoute
@@ -237,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/audit-logs': {
+      id: '/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AuditLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -277,6 +297,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuditLogsRoute: AuditLogsRoute,
   DashboardRoute: DashboardRoute,
   DecisionRoute: DecisionRoute,
   DocumentsRoute: DocumentsRoute,
