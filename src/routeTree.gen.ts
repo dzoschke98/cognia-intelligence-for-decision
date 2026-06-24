@@ -17,6 +17,7 @@ import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DecisionRouteImport } from './routes/decision'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuditLogsRouteImport } from './routes/audit-logs'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TaxIndexRouteImport } from './routes/tax.index'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
@@ -63,6 +64,11 @@ const AuditLogsRoute = AuditLogsRouteImport.update({
   path: '/audit-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -91,6 +97,7 @@ const LegalIdRoute = LegalIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
@@ -122,6 +130,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/audit-logs'
     | '/dashboard'
     | '/decision'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/audit-logs'
     | '/dashboard'
     | '/decision'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/audit-logs'
     | '/dashboard'
     | '/decision'
@@ -185,6 +197,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   AuditLogsRoute: typeof AuditLogsRoute
   DashboardRoute: typeof DashboardRoute
   DecisionRoute: typeof DecisionRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuditLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -297,6 +317,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   AuditLogsRoute: AuditLogsRoute,
   DashboardRoute: DashboardRoute,
   DecisionRoute: DecisionRoute,
