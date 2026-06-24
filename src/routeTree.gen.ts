@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ValidationsRouteImport } from './routes/validations'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as KnowledgeGraphRouteImport } from './routes/knowledge-graph'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DecisionRouteImport } from './routes/decision'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -28,6 +29,11 @@ const ValidationsRoute = ValidationsRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeGraphRoute = KnowledgeGraphRouteImport.update({
+  id: '/knowledge-graph',
+  path: '/knowledge-graph',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentsRoute = DocumentsRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/knowledge-graph'
     | '/login'
     | '/validations'
     | '/legal/$id'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/knowledge-graph'
     | '/login'
     | '/validations'
     | '/legal/$id'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/knowledge-graph'
     | '/login'
     | '/validations'
     | '/legal/$id'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DecisionRoute: typeof DecisionRoute
   DocumentsRoute: typeof DocumentsRoute
+  KnowledgeGraphRoute: typeof KnowledgeGraphRoute
   LoginRoute: typeof LoginRoute
   ValidationsRoute: typeof ValidationsRoute
   LegalIdRoute: typeof LegalIdRoute
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge-graph': {
+      id: '/knowledge-graph'
+      path: '/knowledge-graph'
+      fullPath: '/knowledge-graph'
+      preLoaderRoute: typeof KnowledgeGraphRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/documents': {
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DecisionRoute: DecisionRoute,
   DocumentsRoute: DocumentsRoute,
+  KnowledgeGraphRoute: KnowledgeGraphRoute,
   LoginRoute: LoginRoute,
   ValidationsRoute: ValidationsRoute,
   LegalIdRoute: LegalIdRoute,
