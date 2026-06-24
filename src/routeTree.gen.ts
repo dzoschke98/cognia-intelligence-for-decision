@@ -15,6 +15,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TaxIndexRouteImport } from './routes/tax.index'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
+import { Route as TaxIdRouteImport } from './routes/tax.$id'
 import { Route as LegalIdRouteImport } from './routes/legal.$id'
 
 const LoginRoute = LoginRouteImport.update({
@@ -47,6 +48,11 @@ const LegalIndexRoute = LegalIndexRouteImport.update({
   path: '/legal/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TaxIdRoute = TaxIdRouteImport.update({
+  id: '/tax/$id',
+  path: '/tax/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LegalIdRoute = LegalIdRouteImport.update({
   id: '/legal/$id',
   path: '/legal/$id',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
   '/legal/$id': typeof LegalIdRoute
+  '/tax/$id': typeof TaxIdRoute
   '/legal/': typeof LegalIndexRoute
   '/tax/': typeof TaxIndexRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
   '/legal/$id': typeof LegalIdRoute
+  '/tax/$id': typeof TaxIdRoute
   '/legal': typeof LegalIndexRoute
   '/tax': typeof TaxIndexRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
   '/legal/$id': typeof LegalIdRoute
+  '/tax/$id': typeof TaxIdRoute
   '/legal/': typeof LegalIndexRoute
   '/tax/': typeof TaxIndexRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/login'
     | '/legal/$id'
+    | '/tax/$id'
     | '/legal/'
     | '/tax/'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/login'
     | '/legal/$id'
+    | '/tax/$id'
     | '/legal'
     | '/tax'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/login'
     | '/legal/$id'
+    | '/tax/$id'
     | '/legal/'
     | '/tax/'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   DocumentsRoute: typeof DocumentsRoute
   LoginRoute: typeof LoginRoute
   LegalIdRoute: typeof LegalIdRoute
+  TaxIdRoute: typeof TaxIdRoute
   LegalIndexRoute: typeof LegalIndexRoute
   TaxIndexRoute: typeof TaxIndexRoute
 }
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tax/$id': {
+      id: '/tax/$id'
+      path: '/tax/$id'
+      fullPath: '/tax/$id'
+      preLoaderRoute: typeof TaxIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/legal/$id': {
       id: '/legal/$id'
       path: '/legal/$id'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentsRoute: DocumentsRoute,
   LoginRoute: LoginRoute,
   LegalIdRoute: LegalIdRoute,
+  TaxIdRoute: TaxIdRoute,
   LegalIndexRoute: LegalIndexRoute,
   TaxIndexRoute: TaxIndexRoute,
 }
