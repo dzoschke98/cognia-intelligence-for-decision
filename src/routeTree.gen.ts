@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ValidationsRouteImport } from './routes/validations'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as KnowledgeGraphRouteImport } from './routes/knowledge-graph'
@@ -27,6 +28,11 @@ import { Route as LegalIdRouteImport } from './routes/legal.$id'
 const ValidationsRoute = ValidationsRouteImport.update({
   id: '/validations',
   path: '/validations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportsRoute = ReportsRouteImport.update({
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/tax/$id': typeof TaxIdRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/tax/$id': typeof TaxIdRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/tax/$id': typeof TaxIdRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/knowledge-graph'
     | '/login'
     | '/reports'
+    | '/settings'
     | '/validations'
     | '/legal/$id'
     | '/tax/$id'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/knowledge-graph'
     | '/login'
     | '/reports'
+    | '/settings'
     | '/validations'
     | '/legal/$id'
     | '/tax/$id'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/knowledge-graph'
     | '/login'
     | '/reports'
+    | '/settings'
     | '/validations'
     | '/legal/$id'
     | '/tax/$id'
@@ -205,6 +217,7 @@ export interface RootRouteChildren {
   KnowledgeGraphRoute: typeof KnowledgeGraphRoute
   LoginRoute: typeof LoginRoute
   ReportsRoute: typeof ReportsRoute
+  SettingsRoute: typeof SettingsRoute
   ValidationsRoute: typeof ValidationsRoute
   LegalIdRoute: typeof LegalIdRoute
   TaxIdRoute: typeof TaxIdRoute
@@ -219,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/validations'
       fullPath: '/validations'
       preLoaderRoute: typeof ValidationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reports': {
@@ -325,6 +345,7 @@ const rootRouteChildren: RootRouteChildren = {
   KnowledgeGraphRoute: KnowledgeGraphRoute,
   LoginRoute: LoginRoute,
   ReportsRoute: ReportsRoute,
+  SettingsRoute: SettingsRoute,
   ValidationsRoute: ValidationsRoute,
   LegalIdRoute: LegalIdRoute,
   TaxIdRoute: TaxIdRoute,
@@ -334,3 +355,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
