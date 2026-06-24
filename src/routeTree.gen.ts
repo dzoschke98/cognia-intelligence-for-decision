@@ -9,38 +9,294 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ValidationsRouteImport } from './routes/validations'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as KnowledgeGraphRouteImport } from './routes/knowledge-graph'
+import { Route as DocumentsRouteImport } from './routes/documents'
+import { Route as DecisionRouteImport } from './routes/decision'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as AuditLogsRouteImport } from './routes/audit-logs'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TaxIndexRouteImport } from './routes/tax.index'
+import { Route as LegalIndexRouteImport } from './routes/legal.index'
+import { Route as TaxIdRouteImport } from './routes/tax.$id'
+import { Route as LegalIdRouteImport } from './routes/legal.$id'
 
+const ValidationsRoute = ValidationsRouteImport.update({
+  id: '/validations',
+  path: '/validations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeGraphRoute = KnowledgeGraphRouteImport.update({
+  id: '/knowledge-graph',
+  path: '/knowledge-graph',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentsRoute = DocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DecisionRoute = DecisionRouteImport.update({
+  id: '/decision',
+  path: '/decision',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuditLogsRoute = AuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TaxIndexRoute = TaxIndexRouteImport.update({
+  id: '/tax/',
+  path: '/tax/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalIndexRoute = LegalIndexRouteImport.update({
+  id: '/legal/',
+  path: '/legal/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TaxIdRoute = TaxIdRouteImport.update({
+  id: '/tax/$id',
+  path: '/tax/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalIdRoute = LegalIdRouteImport.update({
+  id: '/legal/$id',
+  path: '/legal/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/audit-logs': typeof AuditLogsRoute
+  '/dashboard': typeof DashboardRoute
+  '/decision': typeof DecisionRoute
+  '/documents': typeof DocumentsRoute
+  '/knowledge-graph': typeof KnowledgeGraphRoute
+  '/login': typeof LoginRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
+  '/validations': typeof ValidationsRoute
+  '/legal/$id': typeof LegalIdRoute
+  '/tax/$id': typeof TaxIdRoute
+  '/legal/': typeof LegalIndexRoute
+  '/tax/': typeof TaxIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/audit-logs': typeof AuditLogsRoute
+  '/dashboard': typeof DashboardRoute
+  '/decision': typeof DecisionRoute
+  '/documents': typeof DocumentsRoute
+  '/knowledge-graph': typeof KnowledgeGraphRoute
+  '/login': typeof LoginRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
+  '/validations': typeof ValidationsRoute
+  '/legal/$id': typeof LegalIdRoute
+  '/tax/$id': typeof TaxIdRoute
+  '/legal': typeof LegalIndexRoute
+  '/tax': typeof TaxIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/audit-logs': typeof AuditLogsRoute
+  '/dashboard': typeof DashboardRoute
+  '/decision': typeof DecisionRoute
+  '/documents': typeof DocumentsRoute
+  '/knowledge-graph': typeof KnowledgeGraphRoute
+  '/login': typeof LoginRoute
+  '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
+  '/validations': typeof ValidationsRoute
+  '/legal/$id': typeof LegalIdRoute
+  '/tax/$id': typeof TaxIdRoute
+  '/legal/': typeof LegalIndexRoute
+  '/tax/': typeof TaxIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/audit-logs'
+    | '/dashboard'
+    | '/decision'
+    | '/documents'
+    | '/knowledge-graph'
+    | '/login'
+    | '/reports'
+    | '/settings'
+    | '/validations'
+    | '/legal/$id'
+    | '/tax/$id'
+    | '/legal/'
+    | '/tax/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/audit-logs'
+    | '/dashboard'
+    | '/decision'
+    | '/documents'
+    | '/knowledge-graph'
+    | '/login'
+    | '/reports'
+    | '/settings'
+    | '/validations'
+    | '/legal/$id'
+    | '/tax/$id'
+    | '/legal'
+    | '/tax'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/audit-logs'
+    | '/dashboard'
+    | '/decision'
+    | '/documents'
+    | '/knowledge-graph'
+    | '/login'
+    | '/reports'
+    | '/settings'
+    | '/validations'
+    | '/legal/$id'
+    | '/tax/$id'
+    | '/legal/'
+    | '/tax/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AuditLogsRoute: typeof AuditLogsRoute
+  DashboardRoute: typeof DashboardRoute
+  DecisionRoute: typeof DecisionRoute
+  DocumentsRoute: typeof DocumentsRoute
+  KnowledgeGraphRoute: typeof KnowledgeGraphRoute
+  LoginRoute: typeof LoginRoute
+  ReportsRoute: typeof ReportsRoute
+  SettingsRoute: typeof SettingsRoute
+  ValidationsRoute: typeof ValidationsRoute
+  LegalIdRoute: typeof LegalIdRoute
+  TaxIdRoute: typeof TaxIdRoute
+  LegalIndexRoute: typeof LegalIndexRoute
+  TaxIndexRoute: typeof TaxIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/validations': {
+      id: '/validations'
+      path: '/validations'
+      fullPath: '/validations'
+      preLoaderRoute: typeof ValidationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge-graph': {
+      id: '/knowledge-graph'
+      path: '/knowledge-graph'
+      fullPath: '/knowledge-graph'
+      preLoaderRoute: typeof KnowledgeGraphRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documents': {
+      id: '/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/decision': {
+      id: '/decision'
+      path: '/decision'
+      fullPath: '/decision'
+      preLoaderRoute: typeof DecisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/audit-logs': {
+      id: '/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AuditLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +304,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tax/': {
+      id: '/tax/'
+      path: '/tax'
+      fullPath: '/tax/'
+      preLoaderRoute: typeof TaxIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/': {
+      id: '/legal/'
+      path: '/legal'
+      fullPath: '/legal/'
+      preLoaderRoute: typeof LegalIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tax/$id': {
+      id: '/tax/$id'
+      path: '/tax/$id'
+      fullPath: '/tax/$id'
+      preLoaderRoute: typeof TaxIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/$id': {
+      id: '/legal/$id'
+      path: '/legal/$id'
+      fullPath: '/legal/$id'
+      preLoaderRoute: typeof LegalIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AuditLogsRoute: AuditLogsRoute,
+  DashboardRoute: DashboardRoute,
+  DecisionRoute: DecisionRoute,
+  DocumentsRoute: DocumentsRoute,
+  KnowledgeGraphRoute: KnowledgeGraphRoute,
+  LoginRoute: LoginRoute,
+  ReportsRoute: ReportsRoute,
+  SettingsRoute: SettingsRoute,
+  ValidationsRoute: ValidationsRoute,
+  LegalIdRoute: LegalIdRoute,
+  TaxIdRoute: TaxIdRoute,
+  LegalIndexRoute: LegalIndexRoute,
+  TaxIndexRoute: TaxIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
