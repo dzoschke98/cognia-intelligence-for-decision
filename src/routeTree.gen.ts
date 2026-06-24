@@ -14,6 +14,7 @@ import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
+import { Route as LegalIdRouteImport } from './routes/legal.$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -40,12 +41,18 @@ const LegalIndexRoute = LegalIndexRouteImport.update({
   path: '/legal/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LegalIdRoute = LegalIdRouteImport.update({
+  id: '/legal/$id',
+  path: '/legal/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
+  '/legal/$id': typeof LegalIdRoute
   '/legal/': typeof LegalIndexRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
+  '/legal/$id': typeof LegalIdRoute
   '/legal': typeof LegalIndexRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,28 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
+  '/legal/$id': typeof LegalIdRoute
   '/legal/': typeof LegalIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/documents' | '/login' | '/legal/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/documents'
+    | '/login'
+    | '/legal/$id'
+    | '/legal/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/documents' | '/login' | '/legal'
-  id: '__root__' | '/' | '/dashboard' | '/documents' | '/login' | '/legal/'
+  to: '/' | '/dashboard' | '/documents' | '/login' | '/legal/$id' | '/legal'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/documents'
+    | '/login'
+    | '/legal/$id'
+    | '/legal/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +98,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DocumentsRoute: typeof DocumentsRoute
   LoginRoute: typeof LoginRoute
+  LegalIdRoute: typeof LegalIdRoute
   LegalIndexRoute: typeof LegalIndexRoute
 }
 
@@ -116,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/legal/$id': {
+      id: '/legal/$id'
+      path: '/legal/$id'
+      fullPath: '/legal/$id'
+      preLoaderRoute: typeof LegalIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -124,6 +154,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DocumentsRoute: DocumentsRoute,
   LoginRoute: LoginRoute,
+  LegalIdRoute: LegalIdRoute,
   LegalIndexRoute: LegalIndexRoute,
 }
 export const routeTree = rootRouteImport
