@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ValidationsRouteImport } from './routes/validations'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DecisionRouteImport } from './routes/decision'
@@ -19,6 +20,11 @@ import { Route as LegalIndexRouteImport } from './routes/legal.index'
 import { Route as TaxIdRouteImport } from './routes/tax.$id'
 import { Route as LegalIdRouteImport } from './routes/legal.$id'
 
+const ValidationsRoute = ValidationsRouteImport.update({
+  id: '/validations',
+  path: '/validations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
+  '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/tax/$id': typeof TaxIdRoute
   '/legal/': typeof LegalIndexRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
+  '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/tax/$id': typeof TaxIdRoute
   '/legal': typeof LegalIndexRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
   '/login': typeof LoginRoute
+  '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/tax/$id': typeof TaxIdRoute
   '/legal/': typeof LegalIndexRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/decision'
     | '/documents'
     | '/login'
+    | '/validations'
     | '/legal/$id'
     | '/tax/$id'
     | '/legal/'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/decision'
     | '/documents'
     | '/login'
+    | '/validations'
     | '/legal/$id'
     | '/tax/$id'
     | '/legal'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/decision'
     | '/documents'
     | '/login'
+    | '/validations'
     | '/legal/$id'
     | '/tax/$id'
     | '/legal/'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   DecisionRoute: typeof DecisionRoute
   DocumentsRoute: typeof DocumentsRoute
   LoginRoute: typeof LoginRoute
+  ValidationsRoute: typeof ValidationsRoute
   LegalIdRoute: typeof LegalIdRoute
   TaxIdRoute: typeof TaxIdRoute
   LegalIndexRoute: typeof LegalIndexRoute
@@ -149,6 +162,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/validations': {
+      id: '/validations'
+      path: '/validations'
+      fullPath: '/validations'
+      preLoaderRoute: typeof ValidationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   DecisionRoute: DecisionRoute,
   DocumentsRoute: DocumentsRoute,
   LoginRoute: LoginRoute,
+  ValidationsRoute: ValidationsRoute,
   LegalIdRoute: LegalIdRoute,
   TaxIdRoute: TaxIdRoute,
   LegalIndexRoute: LegalIndexRoute,
