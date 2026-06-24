@@ -81,9 +81,7 @@ function Decision() {
 }
 
 function Matrix({ decisions }: { decisions: any[] }) {
-  const cells = [
-    ["critico", "alto", "medio", "baixo"],
-  ];
+  const urgencyMap: Record<string, number> = { baixo: 0, medio: 1, alto: 2, critico: 3 };
   return (
     <div className="relative h-64 w-full rounded-md border border-white/10 bg-gradient-to-br from-background to-card p-3">
       <div className="absolute inset-3 grid grid-cols-4 grid-rows-4 gap-0.5">
@@ -92,7 +90,7 @@ function Matrix({ decisions }: { decisions: any[] }) {
         ))}
       </div>
       {decisions.map((d) => {
-        const urgencyIdx = { baixo: 0, medio: 1, alto: 2, critico: 3 }[d.urgency as keyof typeof urgencyIdx] ?? 1;
+        const urgencyIdx = urgencyMap[d.urgency] ?? 1;
         const impactBucket = Math.min(3, Math.floor(d.financialImpact / 120000));
         const left = urgencyIdx * 25 + 6;
         const top = 100 - impactBucket * 25 - 12;
