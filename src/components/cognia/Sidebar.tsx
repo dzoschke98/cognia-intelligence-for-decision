@@ -2,13 +2,15 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, FileText, Scale, Receipt, Brain, CheckCircle2,
-  Network, BarChart3, ShieldCheck, Settings, Users2, Hexagon,
+  Network, BarChart3, ShieldCheck, Settings, Users2, Hexagon, Radar, LineChart,
 } from "lucide-react";
 
 const items = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/radar", label: "Radar de Inteligência", icon: Radar },
   { to: "/documents", label: "Documentos", icon: FileText },
   { to: "/legal", label: "Legal Engine", icon: Scale },
+  { to: "/jurimetry", label: "Jurimetria Trabalhista", icon: LineChart },
   { to: "/tax", label: "Tax Engine", icon: Receipt },
   { to: "/decision", label: "Decision Engine", icon: Brain },
   { to: "/validations", label: "Validações", icon: CheckCircle2 },
