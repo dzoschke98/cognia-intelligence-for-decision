@@ -14,6 +14,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as KnowledgeGraphRouteImport } from './routes/knowledge-graph'
+import { Route as JurimetryRouteImport } from './routes/jurimetry'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DecisionRouteImport } from './routes/decision'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -21,8 +22,10 @@ import { Route as AuditLogsRouteImport } from './routes/audit-logs'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TaxIndexRouteImport } from './routes/tax.index'
+import { Route as RadarIndexRouteImport } from './routes/radar.index'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
 import { Route as TaxIdRouteImport } from './routes/tax.$id'
+import { Route as RadarIdRouteImport } from './routes/radar.$id'
 import { Route as LegalIdRouteImport } from './routes/legal.$id'
 
 const ValidationsRoute = ValidationsRouteImport.update({
@@ -48,6 +51,11 @@ const LoginRoute = LoginRouteImport.update({
 const KnowledgeGraphRoute = KnowledgeGraphRouteImport.update({
   id: '/knowledge-graph',
   path: '/knowledge-graph',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JurimetryRoute = JurimetryRouteImport.update({
+  id: '/jurimetry',
+  path: '/jurimetry',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentsRoute = DocumentsRouteImport.update({
@@ -85,6 +93,11 @@ const TaxIndexRoute = TaxIndexRouteImport.update({
   path: '/tax/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RadarIndexRoute = RadarIndexRouteImport.update({
+  id: '/radar/',
+  path: '/radar/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LegalIndexRoute = LegalIndexRouteImport.update({
   id: '/legal/',
   path: '/legal/',
@@ -93,6 +106,11 @@ const LegalIndexRoute = LegalIndexRouteImport.update({
 const TaxIdRoute = TaxIdRouteImport.update({
   id: '/tax/$id',
   path: '/tax/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RadarIdRoute = RadarIdRouteImport.update({
+  id: '/radar/$id',
+  path: '/radar/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegalIdRoute = LegalIdRouteImport.update({
@@ -108,14 +126,17 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/jurimetry': typeof JurimetryRoute
   '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
+  '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
   '/legal/': typeof LegalIndexRoute
+  '/radar/': typeof RadarIndexRoute
   '/tax/': typeof TaxIndexRoute
 }
 export interface FileRoutesByTo {
@@ -125,14 +146,17 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/jurimetry': typeof JurimetryRoute
   '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
+  '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
   '/legal': typeof LegalIndexRoute
+  '/radar': typeof RadarIndexRoute
   '/tax': typeof TaxIndexRoute
 }
 export interface FileRoutesById {
@@ -143,14 +167,17 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/jurimetry': typeof JurimetryRoute
   '/knowledge-graph': typeof KnowledgeGraphRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
+  '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
   '/legal/': typeof LegalIndexRoute
+  '/radar/': typeof RadarIndexRoute
   '/tax/': typeof TaxIndexRoute
 }
 export interface FileRouteTypes {
@@ -162,14 +189,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/jurimetry'
     | '/knowledge-graph'
     | '/login'
     | '/reports'
     | '/settings'
     | '/validations'
     | '/legal/$id'
+    | '/radar/$id'
     | '/tax/$id'
     | '/legal/'
+    | '/radar/'
     | '/tax/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -179,14 +209,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/jurimetry'
     | '/knowledge-graph'
     | '/login'
     | '/reports'
     | '/settings'
     | '/validations'
     | '/legal/$id'
+    | '/radar/$id'
     | '/tax/$id'
     | '/legal'
+    | '/radar'
     | '/tax'
   id:
     | '__root__'
@@ -196,14 +229,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/jurimetry'
     | '/knowledge-graph'
     | '/login'
     | '/reports'
     | '/settings'
     | '/validations'
     | '/legal/$id'
+    | '/radar/$id'
     | '/tax/$id'
     | '/legal/'
+    | '/radar/'
     | '/tax/'
   fileRoutesById: FileRoutesById
 }
@@ -214,14 +250,17 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DecisionRoute: typeof DecisionRoute
   DocumentsRoute: typeof DocumentsRoute
+  JurimetryRoute: typeof JurimetryRoute
   KnowledgeGraphRoute: typeof KnowledgeGraphRoute
   LoginRoute: typeof LoginRoute
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   ValidationsRoute: typeof ValidationsRoute
   LegalIdRoute: typeof LegalIdRoute
+  RadarIdRoute: typeof RadarIdRoute
   TaxIdRoute: typeof TaxIdRoute
   LegalIndexRoute: typeof LegalIndexRoute
+  RadarIndexRoute: typeof RadarIndexRoute
   TaxIndexRoute: typeof TaxIndexRoute
 }
 
@@ -260,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/knowledge-graph'
       fullPath: '/knowledge-graph'
       preLoaderRoute: typeof KnowledgeGraphRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jurimetry': {
+      id: '/jurimetry'
+      path: '/jurimetry'
+      fullPath: '/jurimetry'
+      preLoaderRoute: typeof JurimetryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/documents': {
@@ -311,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TaxIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/radar/': {
+      id: '/radar/'
+      path: '/radar'
+      fullPath: '/radar/'
+      preLoaderRoute: typeof RadarIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/legal/': {
       id: '/legal/'
       path: '/legal'
@@ -323,6 +376,13 @@ declare module '@tanstack/react-router' {
       path: '/tax/$id'
       fullPath: '/tax/$id'
       preLoaderRoute: typeof TaxIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/radar/$id': {
+      id: '/radar/$id'
+      path: '/radar/$id'
+      fullPath: '/radar/$id'
+      preLoaderRoute: typeof RadarIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/legal/$id': {
@@ -342,14 +402,17 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DecisionRoute: DecisionRoute,
   DocumentsRoute: DocumentsRoute,
+  JurimetryRoute: JurimetryRoute,
   KnowledgeGraphRoute: KnowledgeGraphRoute,
   LoginRoute: LoginRoute,
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   ValidationsRoute: ValidationsRoute,
   LegalIdRoute: LegalIdRoute,
+  RadarIdRoute: RadarIdRoute,
   TaxIdRoute: TaxIdRoute,
   LegalIndexRoute: LegalIndexRoute,
+  RadarIndexRoute: RadarIndexRoute,
   TaxIndexRoute: TaxIndexRoute,
 }
 export const routeTree = rootRouteImport
