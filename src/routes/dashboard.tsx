@@ -58,6 +58,8 @@ function Dashboard() {
         <Kpi icon={Timer} label="Tempo médio economizado" value="38h" accent="from-cyan to-success" />
       </div>
 
+      <RadarSection />
+
       {/* Priority list */}
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="glass-card lg:col-span-2 p-5">
