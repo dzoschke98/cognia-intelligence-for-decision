@@ -7,12 +7,16 @@ import {
   companies, users, initialDocuments, initialLegalAnalyses, initialTaxAnalyses,
   decisionRecommendations, initialAuditLogs,
 } from "./mockData";
+import {
+  initialRadarUpdates, jurimetryPendings as seedPendings, initialRadarLogs, initialJurimetryLogs,
+} from "./radarMock";
 import type {
   Company, User, DocumentItem, LegalAnalysis, TaxAnalysis,
   DecisionRecommendation, AuditLog, ValidationStatus, RiskLevel, EngineType, DocumentType,
+  RadarUpdate, RadarStatus, JurimetryPending, JurimetryFieldStatus,
 } from "./types";
 
-const KEY = "cognia.state.v1";
+const KEY = "cognia.state.v2";
 
 interface State {
   documents: DocumentItem[];
@@ -20,6 +24,8 @@ interface State {
   tax: TaxAnalysis[];
   decisions: DecisionRecommendation[];
   logs: AuditLog[];
+  radar: RadarUpdate[];
+  pendings: JurimetryPending[];
   currentUserEmail: string | null;
 }
 
@@ -28,9 +34,12 @@ const initial: State = {
   legal: initialLegalAnalyses,
   tax: initialTaxAnalyses,
   decisions: decisionRecommendations,
-  logs: initialAuditLogs,
+  logs: [...initialRadarLogs, ...initialJurimetryLogs, ...initialAuditLogs],
+  radar: initialRadarUpdates,
+  pendings: seedPendings,
   currentUserEmail: null,
 };
+
 
 let state: State = load();
 const listeners = new Set<() => void>();
