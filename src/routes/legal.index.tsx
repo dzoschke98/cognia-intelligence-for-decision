@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/cognia/AppShell";
 import { useStore, getCompany, generateMockLegal } from "@/lib/cognia/store";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RiskBadge, StatusBadge, ConfidenceIndicator } from "@/components/cognia/Badges";
 import { fmtBRL, fmtDate } from "@/lib/cognia/format";
-import { Plus, Search, Scale } from "lucide-react";
+import { Plus, Search, Scale, LineChart } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/legal/")({
@@ -48,9 +48,14 @@ function LegalList() {
           <h1 className="text-3xl font-semibold tracking-tight">Análises jurídicas</h1>
           <p className="text-sm text-muted-foreground">Processamento, extração e score de risco com validação humana.</p>
         </div>
-        <Button onClick={createMock} className="bg-gradient-to-r from-primary to-purple text-white">
-          <Plus className="mr-2 h-4 w-4" /> Nova análise jurídica
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" className="border-white/10">
+            <Link to="/jurimetry"><LineChart className="mr-2 h-4 w-4" /> Jurimetria Trabalhista</Link>
+          </Button>
+          <Button onClick={createMock} className="bg-gradient-to-r from-primary to-purple text-white">
+            <Plus className="mr-2 h-4 w-4" /> Nova análise jurídica
+          </Button>
+        </div>
       </div>
 
       <div className="glass-card flex flex-wrap items-center gap-3 p-3">

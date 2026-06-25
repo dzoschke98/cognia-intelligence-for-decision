@@ -4,7 +4,8 @@ import { useStore } from "@/lib/cognia/store";
 import { RiskBadge } from "@/components/cognia/Badges";
 import { Button } from "@/components/ui/button";
 import { fmtBRL } from "@/lib/cognia/format";
-import { Brain, AlertTriangle, ArrowRight } from "lucide-react";
+import { Brain, AlertTriangle, ArrowRight, Radar } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/decision")({
   head: () => ({ meta: [{ title: "Decision Engine — CognIA" }] }),
@@ -13,8 +14,10 @@ export const Route = createFileRoute("/decision")({
 
 function Decision() {
   const decisions = useStore((s) => s.decisions);
+  const radar = useStore((s) => s.radar);
   const navigate = useNavigate();
   const sorted = [...decisions].sort((a, b) => b.priorityScore - a.priorityScore);
+  const radarAlerts = radar.filter((r) => r.relevance === "alto" || r.relevance === "critico").slice(0, 6);
 
   return (
     <div className="space-y-6">
@@ -31,7 +34,30 @@ function Decision() {
         <span><b className="text-warning">A CognIA recomenda e prioriza.</b> A decisão final permanece com o especialista humano.</span>
       </div>
 
+      <div className="glass-card p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-cyan">
+            <Radar className="h-3.5 w-3.5" /> Alertas originados pelo Radar de Inteligência
+          </div>
+          <Link to="/radar" className="text-xs text-cyan hover:underline">Abrir Radar →</Link>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {radarAlerts.map((r) => (
+            <Link key={r.id} to="/radar/$id" params={{ id: r.id }} className="rounded-lg border border-white/5 bg-white/5 p-3 transition hover:border-white/15">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase text-cyan">{r.area}</span>
+                <RiskBadge risk={r.relevance} />
+              </div>
+              <div className="mt-1 text-sm font-medium line-clamp-2">{r.title}</div>
+              <div className="mt-2 text-[11px] text-muted-foreground">{r.impactedCount} {r.impactedKind} · {r.source}</div>
+              <div className="mt-2 text-[11px]"><span className="text-cyan">Ação:</span> {r.suggestedAction}</div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-3">
+
         <div className="lg:col-span-2 space-y-3">
           {sorted.map((d) => (
             <div key={d.id} className="glass-card group p-4 transition hover:border-white/15">
