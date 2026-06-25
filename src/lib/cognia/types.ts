@@ -158,3 +158,81 @@ export interface GraphEdge {
   to: string;
   label?: string;
 }
+
+// ===== Radar de Inteligência =====
+export type RadarArea = "Trabalhista" | "Tributário" | "Reforma Tributária" | "Compliance" | "Jurisprudência";
+export type RadarStatus = "novo" | "analisado" | "em_revisao" | "acao_criada";
+
+export interface RadarImpactItem {
+  kind: "processo" | "documento" | "diagnostico";
+  ref: string;
+  detail: string;
+  risk?: RiskLevel;
+}
+
+export interface RadarSuggestion {
+  id: UUID;
+  title: string;
+  priority: RiskLevel;
+  owner: string;
+  deadline: string;
+  reason: string;
+}
+
+export interface RadarUpdate {
+  id: UUID;
+  title: string;
+  area: RadarArea;
+  source: string;
+  date: string;
+  relevance: RiskLevel;
+  impactedCount: number;
+  impactedKind: "processos" | "documentos" | "empresas";
+  summary: string;
+  whyMatters: string;
+  suggestedAction: string;
+  companyId: UUID;
+  status: RadarStatus;
+  impacts: RadarImpactItem[];
+  suggestions: RadarSuggestion[];
+}
+
+// ===== Jurimetria Trabalhista =====
+export type JurimetryFieldStatus = "pendente" | "aprovado" | "corrigido" | "rejeitado" | "especialista";
+
+export interface JurimetryClaim {
+  claim: string;
+  count: number;
+  successPct: number;
+  agreementPct: number;
+  convictionPct: number;
+  closedPct: number;
+  extinctPct: number;
+  avgAgreement: number;
+  avgConviction: number;
+  avgRisk: number;
+  confidence: number;
+  validation: ValidationStatus;
+}
+
+export interface JurimetryPending {
+  id: UUID;
+  processNumber: string;
+  field: string;
+  suggested: string;
+  confidence: number;
+  status: JurimetryFieldStatus;
+  responsible: string;
+}
+
+export interface JurimetrySuggestion {
+  id: UUID;
+  title: string;
+  reason: string;
+  impactedProcesses: number;
+  financialImpact: number;
+  priority: RiskLevel;
+  confidence: number;
+  owner: string;
+  action: string;
+}

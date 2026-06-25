@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/cognia/AppShell";
 import { Button } from "@/components/ui/button";
-import { FileDown, FileBarChart, Scale, Receipt, CheckCircle2, TrendingUp } from "lucide-react";
+import { FileDown, FileBarChart, Scale, Receipt, CheckCircle2, TrendingUp, LineChart } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/reports")({
@@ -10,6 +10,7 @@ export const Route = createFileRoute("/reports")({
 });
 
 const reports = [
+  { id: "r0", title: "Relatório de Jurimetria Trabalhista", icon: LineChart, summary: "Visão geral, análise por pedido, riscos, valores, tendências e qualidade do cadastro.", owner: "Renata Almeida", date: "24/06/2026", kpis: [{ k: "Processos", v: "22.840" }, { k: "Taxa de êxito", v: "60,6%" }, { k: "Qualidade", v: "93,2%" }] },
   { id: "r1", title: "Relatório Jurídico Executivo", icon: Scale, summary: "Síntese de exposição, riscos e recomendações jurídicas.", owner: "Renata Almeida", date: "23/06/2026", kpis: [{ k: "Processos", v: "8" }, { k: "Risco consolidado", v: "R$ 542k" }, { k: "Confiança média", v: "82%" }] },
   { id: "r2", title: "Relatório Tributário Executivo", icon: Receipt, summary: "Inconsistências e oportunidades fiscais consolidadas.", owner: "Nathan Endrigo", date: "23/06/2026", kpis: [{ k: "Diagnósticos", v: "8" }, { k: "Oportunidades", v: "R$ 1.12M" }, { k: "Confiança média", v: "82%" }] },
   { id: "r3", title: "Relatório Integrado CFO", icon: FileBarChart, summary: "Visão consolidada para o CFO — risco + oportunidade.", owner: "Mariana Costa", date: "22/06/2026", kpis: [{ k: "Impacto total", v: "R$ 1.66M" }, { k: "Recomendações", v: "10" }, { k: "Score consolidado", v: "73" }] },
