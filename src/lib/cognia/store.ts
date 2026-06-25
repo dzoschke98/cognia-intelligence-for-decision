@@ -274,3 +274,53 @@ export function useIsClient() {
   useEffect(() => setC(true), []);
   return c;
 }
+
+// ===== Radar =====
+export function setRadarStatus(id: string, status: import("./types").RadarStatus) {
+  state = { ...state, radar: state.radar.map((r) => r.id === id ? { ...r, status } : r) };
+  addLog({ action: status === "acao_criada" ? "radar.action.created" : "radar.update.viewed", resource: "radar", engine: "radar", engineVersion: "radar-engine-v0.9.0" });
+  emit();
+}
+export function createRadarAction(updateId: string, suggestionTitle: string) {
+  const u = state.radar.find((r) => r.id === updateId);
+  setRadarStatus(updateId, "acao_criada");
+  if (u) {
+    const dec: DecisionRecommendation = {
+      id: uid("dec"),
+      title: `[Radar] ${suggestionTitle}`,
+      origin: "Cross",
+      financialImpact: u.impactedCount * 18000,
+      urgency: u.relevance,
+      priorityScore: u.relevance === "critico" ? 95 : u.relevance === "alto" ? 82 : 65,
+      suggestedOwner: u.suggestions[0]?.owner ?? "Comitê CognIA",
+      status: "pendente",
+      recommendedAction: u.suggestedAction,
+    };
+    state = { ...state, decisions: [dec, ...state.decisions] };
+    addLog({ action: "radar.action.sent_to_validation", resource: "radar", engine: "radar", engineVersion: "radar-engine-v0.9.0", companyId: u.companyId });
+    emit();
+  }
+}
+export function dismissRadarSuggestion(_updateId: string) {
+  addLog({ action: "radar.recommendation.dismissed", resource: "radar", engine: "radar", engineVersion: "radar-engine-v0.9.0" });
+}
+export function logRadarImpact(_updateId: string) {
+  addLog({ action: "radar.impact.generated", resource: "radar", engine: "radar", engineVersion: "radar-engine-v0.9.0" });
+}
+
+// ===== Jurimetria =====
+export function setPendingStatus(id: string, status: import("./types").JurimetryFieldStatus) {
+  state = { ...state, pendings: state.pendings.map((p) => p.id === id ? { ...p, status } : p) };
+  const map: Record<import("./types").JurimetryFieldStatus, string> = {
+    aprovado: "jurimetry.field.approved",
+    corrigido: "jurimetry.field.corrected",
+    rejeitado: "jurimetry.field.rejected",
+    especialista: "jurimetry.suggestion.sent_to_validation",
+    pendente: "jurimetry.dashboard.viewed",
+  };
+  addLog({ action: map[status], resource: "jurimetry", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+  emit();
+}
+export function logJurimetry(action: string) {
+  addLog({ action, resource: "jurimetry", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+}
