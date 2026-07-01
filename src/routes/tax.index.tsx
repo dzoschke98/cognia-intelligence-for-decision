@@ -18,19 +18,22 @@ export const Route = createFileRoute("/tax/")({
 
 function TaxList() {
   const tax = useStore((s) => s.tax);
+  const activeCompanyId = useStore((s) => s.activeCompanyId);
   const [search, setSearch] = useState("");
   const [risk, setRisk] = useState("all");
   const [status, setStatus] = useState("all");
   const [filetype, setFiletype] = useState("all");
+  const [company, setCompany] = useState<string>(activeCompanyId);
   const navigate = useNavigate();
 
   const filtered = useMemo(() => tax.filter((a) => {
+    if (company !== "all" && a.companyId !== company) return false;
     if (risk !== "all" && a.risk !== risk) return false;
     if (status !== "all" && a.validationStatus !== status) return false;
     if (filetype !== "all" && a.fileType !== filetype) return false;
     if (search && !`${a.fileType} ${a.competence} ${getCompany(a.companyId)?.name}`.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
-  }), [tax, risk, status, filetype, search]);
+  }), [tax, risk, status, filetype, search, company]);
 
   async function createMock() {
     const t = toast.loading("Gerando diagnóstico tributário…");
