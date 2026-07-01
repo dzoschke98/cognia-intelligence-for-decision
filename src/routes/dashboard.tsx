@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/cognia/AppShell";
 import { useStore } from "@/lib/cognia/store";
-import { fmtBRL } from "@/lib/cognia/format";
+import { fmtBRL, relativeTime } from "@/lib/cognia/format";
 import { RiskBadge } from "@/components/cognia/Badges";
 import { RadarSection } from "@/components/cognia/RadarSection";
 import {
   FileText, AlertTriangle, TrendingUp, CheckCircle2, BellRing,
   ShieldCheck, Coins, Timer, ArrowUpRight, Sparkles,
+  XCircle, Pencil, Upload, Activity,
 } from "lucide-react";
 import type { LegalAnalysis, TaxAnalysis } from "@/lib/cognia/types";
 
