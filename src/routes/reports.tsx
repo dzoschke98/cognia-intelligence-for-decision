@@ -11,7 +11,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
   LineChart, Line, ComposedChart, Legend, ScatterChart, Scatter, ZAxis,
 } from "recharts";
-import { jurimetryClaims, jurimetryHistory, jurimetryByCity, jurimetryAggregate } from "@/lib/cognia/radarMock";
+import { jurimetryClaims, jurimetryHistory, jurimetryByCity, jurimetryAggregates } from "@/lib/cognia/radarMock";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({ meta: [{ title: "Relatórios — CognIA" }] }),
