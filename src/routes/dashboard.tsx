@@ -106,6 +106,53 @@ function Dashboard() {
       </div>
 
       <DocsTrend />
+      <RecentActivity />
+    </div>
+  );
+}
+
+function RecentActivity() {
+  const logs = useStore((s) => s.logs).slice(0, 8);
+  const iconFor = (a: string) => {
+    if (a === "analysis.approved") return { I: CheckCircle2, c: "text-success" };
+    if (a === "analysis.rejected") return { I: XCircle, c: "text-risk" };
+    if (a === "analysis.corrected") return { I: Pencil, c: "text-cyan" };
+    if (a === "document.upload") return { I: Upload, c: "text-muted-foreground" };
+    if (a === "document.processed") return { I: FileText, c: "text-cyan" };
+    if (a === "legal.analysis.generated" || a === "tax.diagnosis.generated") return { I: Sparkles, c: "text-purple" };
+    return { I: Activity, c: "text-muted-foreground" };
+  };
+  const labelFor = (a: string) => ({
+    "analysis.approved": "Análise aprovada",
+    "analysis.rejected": "Análise rejeitada",
+    "analysis.corrected": "Análise corrigida com correção",
+    "document.upload": "Documento enviado",
+    "document.processed": "Documento processado",
+    "legal.analysis.generated": "Análise jurídica gerada pelo engine",
+    "tax.diagnosis.generated": "Diagnóstico tributário gerado pelo engine",
+    "user.login": "Acesso à plataforma",
+  } as Record<string, string>)[a] ?? a;
+
+  return (
+    <div className="glass-card p-5">
+      <h3 className="mb-3 text-sm font-semibold">Atividade recente</h3>
+      <ul className="divide-y divide-border">
+        {logs.map((l) => {
+          const { I, c } = iconFor(l.action);
+          return (
+            <li key={l.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
+              <div className="flex items-center gap-3">
+                <I className={`h-4 w-4 ${c}`} />
+                <div>
+                  <div className="font-medium">{labelFor(l.action)}</div>
+                  <div className="text-xs text-muted-foreground">{l.userEmail}</div>
+                </div>
+              </div>
+              <span className="text-xs text-muted-foreground">{relativeTime(l.timestamp)}</span>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
