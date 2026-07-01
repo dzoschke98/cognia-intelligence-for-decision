@@ -103,10 +103,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const themeInit = `(function(){try{var t=localStorage.getItem('cognia.theme')||'dark';if(t==='light'){document.documentElement.classList.add('light');}}catch(e){}})();`;
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
       <body>
         {children}
