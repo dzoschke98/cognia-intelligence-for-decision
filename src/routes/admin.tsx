@@ -158,19 +158,55 @@ function Admin() {
           </div>
         </TabsContent>
 
-        <TabsContent value="metricas" className="mt-4">
-          <div className="grid gap-4 sm:grid-cols-4">
-            {[
-              { k: "Confiança média", v: "82%" }, { k: "Tempo médio análise", v: "9s" },
-              { k: "Custo total mês", v: "US$ 942" }, { k: "Aprovação humana", v: "78%" },
-            ].map((m) => (
-              <div key={m.k} className="glass-card p-4">
-                <div className="text-xs text-muted-foreground">{m.k}</div>
-                <div className="text-2xl font-semibold">{m.v}</div>
-              </div>
-            ))}
+        <TabsContent value="metricas" className="mt-4 space-y-4">
+          <div className="grid gap-4 lg:grid-cols-2">
+            <EngineMetrics title="Legal Engine" tone="text-primary" s={legalStats} />
+            <EngineMetrics title="Tax Engine" tone="text-cyan" s={taxStats} />
+          </div>
+          <div className="glass-card p-5">
+            <h3 className="mb-3 text-sm font-semibold">Taxa de aprovação humana por engine</h3>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={engineCompare}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 10%)" />
+                  <XAxis dataKey="name" stroke="oklch(0.68 0.02 260)" fontSize={12} />
+                  <YAxis stroke="oklch(0.68 0.02 260)" fontSize={12} />
+                  <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)" }} />
+                  <Bar dataKey="approval" fill="#2563EB" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+function EngineMetrics({ title, tone, s }: { title: string; tone: string; s: { total: number; approved: number; approvalRate: number; rejectionRate: number; avgConfidence: number; totalCost: number; avgCost: number } }) {
+  const cards = [
+    { k: "Total análises", v: String(s.total) },
+    { k: "Aprovadas", v: String(s.approved) },
+    { k: "Taxa aprovação", v: `${s.approvalRate.toFixed(1)}%` },
+    { k: "Taxa rejeição", v: `${s.rejectionRate.toFixed(1)}%` },
+    { k: "Confiança média", v: `${s.avgConfidence.toFixed(1)}%` },
+    { k: "Custo total", v: `US$ ${s.totalCost.toFixed(2)}` },
+    { k: "Custo médio/análise", v: `US$ ${s.avgCost.toFixed(2)}` },
+  ];
+  return (
+    <div className="glass-card p-5">
+      <h3 className={`mb-3 text-sm font-semibold ${tone}`}>{title}</h3>
+      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+        {cards.map((c) => (
+          <div key={c.k} className="rounded-md border border-border bg-accent/40 p-2.5">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{c.k}</div>
+            <div className="text-sm font-semibold">{c.v}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
       </Tabs>
     </div>
   );
