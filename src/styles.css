@@ -79,6 +79,28 @@
   --shadow-card: 0 8px 32px -8px oklch(0 0 0 / 0.4);
 }
 
+.light {
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.12 0.02 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.12 0.02 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.12 0.02 260);
+  --muted: oklch(0.95 0.01 260);
+  --muted-foreground: oklch(0.45 0.04 260);
+  --border: oklch(0 0 0 / 12%);
+  --input: oklch(0 0 0 / 8%);
+  --glass: oklch(1 0 0 / 80%);
+  --glass-border: oklch(0 0 0 / 10%);
+  --primary: oklch(0.48 0.22 264);
+  --cyan: oklch(0.52 0.13 195);
+  --purple: oklch(0.45 0.24 295);
+  --success: oklch(0.55 0.18 145);
+  --warning: oklch(0.65 0.17 90);
+  --risk: oklch(0.52 0.23 25);
+  --gradient-bg: radial-gradient(ellipse at top, oklch(0.85 0.05 264 / 0.4), transparent 60%);
+}
+
 @layer base {
   * { border-color: var(--color-border); }
   html, body { background-color: var(--color-background); color: var(--color-foreground); }

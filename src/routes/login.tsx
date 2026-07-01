@@ -20,8 +20,18 @@ function LoginPage() {
   const isClient = useIsClient();
   const session = useStore((s) => s.currentUserEmail);
 
+  const VALID_ROUTES = ["/dashboard", "/radar", "/legal", "/tax", "/decision", "/validations"] as const;
+  type PostLogin = (typeof VALID_ROUTES)[number];
+  function postLoginRoute(): PostLogin {
+    try {
+      const v = localStorage.getItem("cognia.postlogin.route");
+      if (v && (VALID_ROUTES as readonly string[]).includes(v)) return v as PostLogin;
+    } catch {}
+    return "/dashboard";
+  }
+
   useEffect(() => {
-    if (isClient && session) navigate({ to: "/dashboard" });
+    if (isClient && session) navigate({ to: postLoginRoute() });
   }, [isClient, session, navigate]);
 
   function doLogin(e?: React.FormEvent) {
@@ -33,14 +43,14 @@ function LoginPage() {
     }
     login(user.email);
     toast.success(`Bem-vindo, ${user.name}`);
-    navigate({ to: "/dashboard" });
+    navigate({ to: postLoginRoute() });
   }
 
   function loginDemo() {
     setEmail("admin@cognia.demo");
     login("admin@cognia.demo");
     toast.success("Entrando como Administrador (demo)");
-    navigate({ to: "/dashboard" });
+    navigate({ to: postLoginRoute() });
   }
 
   return (

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/cognia/AppShell";
-import { useStore, getCompany, generateMockTax } from "@/lib/cognia/store";
+import { useStore, getCompany, getCompanies, generateMockTax } from "@/lib/cognia/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,6 +9,7 @@ import { RiskBadge, StatusBadge, ConfidenceIndicator } from "@/components/cognia
 import { fmtBRL, fmtDate } from "@/lib/cognia/format";
 import { Plus, Search, Receipt } from "lucide-react";
 import { toast } from "sonner";
+import { SummaryFooter } from "@/components/cognia/SummaryFooter";
 
 export const Route = createFileRoute("/tax/")({
   head: () => ({ meta: [{ title: "Tax Engine — CognIA" }] }),
@@ -17,19 +18,22 @@ export const Route = createFileRoute("/tax/")({
 
 function TaxList() {
   const tax = useStore((s) => s.tax);
+  const activeCompanyId = useStore((s) => s.activeCompanyId);
   const [search, setSearch] = useState("");
   const [risk, setRisk] = useState("all");
   const [status, setStatus] = useState("all");
   const [filetype, setFiletype] = useState("all");
+  const [company, setCompany] = useState<string>(activeCompanyId);
   const navigate = useNavigate();
 
   const filtered = useMemo(() => tax.filter((a) => {
+    if (company !== "all" && a.companyId !== company) return false;
     if (risk !== "all" && a.risk !== risk) return false;
     if (status !== "all" && a.validationStatus !== status) return false;
     if (filetype !== "all" && a.fileType !== filetype) return false;
     if (search && !`${a.fileType} ${a.competence} ${getCompany(a.companyId)?.name}`.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
-  }), [tax, risk, status, filetype, search]);
+  }), [tax, risk, status, filetype, search, company]);
 
   async function createMock() {
     const t = toast.loading("Gerando diagnóstico tributário…");
@@ -91,6 +95,13 @@ function TaxList() {
             <SelectItem value="rejeitado">Rejeitado</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={company} onValueChange={setCompany}>
+          <SelectTrigger className="w-[200px]"><SelectValue placeholder="Empresa" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as empresas</SelectItem>
+            {getCompanies().map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="glass-card overflow-hidden">
@@ -128,6 +139,15 @@ function TaxList() {
           </tbody>
         </table>
       </div>
+      <SummaryFooter
+        recordCount={filtered.length}
+        recordLabel="diagnósticos"
+        items={[
+          { label: "Inconsistências", value: fmtBRL(filtered.reduce((s, a) => s + a.inconsistenciesValue, 0)), color: "risk" },
+          { label: "Oportunidades", value: fmtBRL(filtered.reduce((s, a) => s + a.opportunitiesValue, 0)), color: "success" },
+          { label: "Pendentes", value: String(filtered.filter((a) => a.validationStatus === "pendente").length), color: "warning" },
+        ]}
+      />
     </div>
   );
 }

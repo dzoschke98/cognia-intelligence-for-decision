@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/cognia/AppShell";
-import { useStore, getCompany, generateMockLegal } from "@/lib/cognia/store";
+import { useStore, getCompany, getCompanies, generateMockLegal } from "@/lib/cognia/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,6 +9,7 @@ import { RiskBadge, StatusBadge, ConfidenceIndicator } from "@/components/cognia
 import { fmtBRL, fmtDate } from "@/lib/cognia/format";
 import { Plus, Search, Scale, LineChart } from "lucide-react";
 import { toast } from "sonner";
+import { SummaryFooter } from "@/components/cognia/SummaryFooter";
 
 export const Route = createFileRoute("/legal/")({
   head: () => ({ meta: [{ title: "Legal Engine — CognIA" }] }),
@@ -17,17 +18,20 @@ export const Route = createFileRoute("/legal/")({
 
 function LegalList() {
   const legal = useStore((s) => s.legal);
+  const activeCompanyId = useStore((s) => s.activeCompanyId);
   const [search, setSearch] = useState("");
   const [risk, setRisk] = useState("all");
   const [status, setStatus] = useState("all");
+  const [company, setCompany] = useState<string>(activeCompanyId);
   const navigate = useNavigate();
 
   const filtered = useMemo(() => legal.filter((a) => {
+    if (company !== "all" && a.companyId !== company) return false;
     if (risk !== "all" && a.risk !== risk) return false;
     if (status !== "all" && a.validationStatus !== status) return false;
     if (search && !`${a.processNumber} ${a.claimant} ${a.defendant}`.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
-  }), [legal, risk, status, search]);
+  }), [legal, risk, status, search, company]);
 
   async function createMock() {
     const t = toast.loading("Gerando análise jurídica…");
@@ -83,6 +87,13 @@ function LegalList() {
             <SelectItem value="rejeitado">Rejeitado</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={company} onValueChange={setCompany}>
+          <SelectTrigger className="w-[200px]"><SelectValue placeholder="Empresa" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as empresas</SelectItem>
+            {getCompanies().map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="glass-card overflow-hidden">
@@ -118,6 +129,15 @@ function LegalList() {
           </tbody>
         </table>
       </div>
+      <SummaryFooter
+        recordCount={filtered.length}
+        recordLabel="processos"
+        items={[
+          { label: "Valor estimado", value: fmtBRL(filtered.reduce((s, a) => s + a.estimatedValue, 0)), color: "cyan" },
+          { label: "Pendentes", value: String(filtered.filter((a) => a.validationStatus === "pendente").length), color: "warning" },
+          { label: "Alto/Crítico", value: String(filtered.filter((a) => a.risk === "alto" || a.risk === "critico").length), color: "risk" },
+        ]}
+      />
     </div>
   );
 }

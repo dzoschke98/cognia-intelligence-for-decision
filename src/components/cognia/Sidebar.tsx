@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { useStore } from "@/lib/cognia/store";
 import {
   LayoutDashboard, FileText, Scale, Receipt, Brain, CheckCircle2,
   Network, BarChart3, ShieldCheck, Settings, Users2, Hexagon, Radar, LineChart,
@@ -23,8 +24,12 @@ const items = [
 
 export function Sidebar() {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const pendingCount = useStore((s) =>
+    s.legal.filter((a) => a.validationStatus === "pendente").length +
+    s.tax.filter((a) => a.validationStatus === "pendente").length,
+  );
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-white/5 bg-[#0B0F1A]/80 backdrop-blur-xl md:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-card/80 backdrop-blur-xl md:flex">
       <Link to="/dashboard" className="flex items-center gap-2.5 px-5 py-5">
         <CogniaLogo className="h-8 w-8" />
         <div className="flex flex-col leading-tight">
@@ -35,22 +40,28 @@ export function Sidebar() {
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pb-6">
         {items.map(({ to, label, icon: Icon }) => {
           const active = path === to || (to !== "/dashboard" && path.startsWith(to));
+          const isValidations = to === "/validations";
           return (
             <Link key={to} to={to}
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all",
                 active
-                  ? "bg-primary/15 text-white shadow-[inset_0_0_0_1px] shadow-primary/30"
-                  : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                  ? "bg-primary/15 text-foreground shadow-[inset_0_0_0_1px] shadow-primary/30"
+                  : "text-muted-foreground hover:bg-accent hover:text-foreground",
               )}
             >
-              <Icon className={cn("h-4 w-4 transition-colors", active ? "text-cyan" : "text-muted-foreground group-hover:text-white")} />
-              <span className="truncate">{label}</span>
+              <Icon className={cn("h-4 w-4 transition-colors", active ? "text-cyan" : "text-muted-foreground group-hover:text-foreground")} />
+              <span className="flex-1 truncate">{label}</span>
+              {isValidations && pendingCount > 0 && (
+                <span className="grid h-5 w-5 place-items-center rounded-full bg-warning/20 text-[10px] font-semibold text-warning">
+                  {pendingCount}
+                </span>
+              )}
             </Link>
           );
         })}
       </nav>
-      <div className="border-t border-white/5 px-5 py-3 text-[10px] text-muted-foreground">
+      <div className="border-t border-border px-5 py-3 text-[10px] text-muted-foreground">
         Ambiente MVP · dados mockados
       </div>
     </aside>
