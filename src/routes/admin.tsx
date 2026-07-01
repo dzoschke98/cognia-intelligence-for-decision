@@ -2,8 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/cognia/AppShell";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { adminUsers } from "@/lib/cognia/mockData";
-import { getCompanies } from "@/lib/cognia/store";
+import { getCompanies, useStore } from "@/lib/cognia/store";
 import { Building2, Users, Shield, Cpu, Gauge, BarChart3 } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Administração — CognIA" }] }),
