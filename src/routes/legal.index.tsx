@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/cognia/AppShell";
-import { useStore, getCompany, generateMockLegal } from "@/lib/cognia/store";
+import { useStore, getCompany, getCompanies, generateMockLegal } from "@/lib/cognia/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,6 +9,7 @@ import { RiskBadge, StatusBadge, ConfidenceIndicator } from "@/components/cognia
 import { fmtBRL, fmtDate } from "@/lib/cognia/format";
 import { Plus, Search, Scale, LineChart } from "lucide-react";
 import { toast } from "sonner";
+import { SummaryFooter } from "@/components/cognia/SummaryFooter";
 
 export const Route = createFileRoute("/legal/")({
   head: () => ({ meta: [{ title: "Legal Engine — CognIA" }] }),
