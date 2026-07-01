@@ -207,7 +207,3 @@ function EngineMetrics({ title, tone, s }: { title: string; tone: string; s: { t
     </div>
   );
 }
-      </Tabs>
-    </div>
-  );
-}
