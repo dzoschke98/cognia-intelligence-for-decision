@@ -129,6 +129,15 @@ function LegalList() {
           </tbody>
         </table>
       </div>
+      <SummaryFooter
+        recordCount={filtered.length}
+        recordLabel="processos"
+        items={[
+          { label: "Valor estimado", value: fmtBRL(filtered.reduce((s, a) => s + a.estimatedValue, 0)), color: "cyan" },
+          { label: "Pendentes", value: String(filtered.filter((a) => a.validationStatus === "pendente").length), color: "warning" },
+          { label: "Alto/Crítico", value: String(filtered.filter((a) => a.risk === "alto" || a.risk === "critico").length), color: "risk" },
+        ]}
+      />
     </div>
   );
 }
