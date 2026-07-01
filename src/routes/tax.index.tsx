@@ -95,6 +95,13 @@ function TaxList() {
             <SelectItem value="rejeitado">Rejeitado</SelectItem>
           </SelectContent>
         </Select>
+        <Select value={company} onValueChange={setCompany}>
+          <SelectTrigger className="w-[200px]"><SelectValue placeholder="Empresa" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas as empresas</SelectItem>
+            {getCompanies().map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="glass-card overflow-hidden">
