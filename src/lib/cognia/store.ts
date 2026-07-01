@@ -27,6 +27,7 @@ interface State {
   radar: RadarUpdate[];
   pendings: JurimetryPending[];
   currentUserEmail: string | null;
+  activeCompanyId: string;
 }
 
 const initial: State = {
@@ -38,7 +39,16 @@ const initial: State = {
   radar: initialRadarUpdates,
   pendings: seedPendings,
   currentUserEmail: null,
+  activeCompanyId: "co-1",
 };
+
+export function setActiveCompany(id: string) {
+  state = { ...state, activeCompanyId: id };
+  emit();
+}
+export function addDocumentMock(input: { name: string; type: DocumentType; companyId: string; uploadedBy: string }) {
+  return processDocumentMock(input);
+}
 
 
 let state: State = load();
