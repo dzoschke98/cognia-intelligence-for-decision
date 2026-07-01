@@ -19,6 +19,29 @@ const engines = [
 ];
 
 function Admin() {
+  const legal = useStore((s) => s.legal);
+  const tax = useStore((s) => s.tax);
+  const engineStats = (arr: Array<{ validationStatus: string; confidence: number; estimatedCost: number }>) => {
+    const total = arr.length;
+    const approved = arr.filter((a) => a.validationStatus === "aprovado").length;
+    const rejected = arr.filter((a) => a.validationStatus === "rejeitado").length;
+    const conf = total ? arr.reduce((s, a) => s + a.confidence, 0) / total : 0;
+    const cost = arr.reduce((s, a) => s + a.estimatedCost, 0);
+    return {
+      total, approved, rejected,
+      approvalRate: total ? (approved / total) * 100 : 0,
+      rejectionRate: total ? (rejected / total) * 100 : 0,
+      avgConfidence: conf,
+      totalCost: cost,
+      avgCost: total ? cost / total : 0,
+    };
+  };
+  const legalStats = engineStats(legal);
+  const taxStats = engineStats(tax);
+  const engineCompare = [
+    { name: "Legal Engine", approval: +legalStats.approvalRate.toFixed(1), color: "hsl(var(--primary))" },
+    { name: "Tax Engine", approval: +taxStats.approvalRate.toFixed(1) },
+  ];
   return (
     <div className="space-y-6">
       <div>
