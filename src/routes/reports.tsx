@@ -132,10 +132,10 @@ function R0() {
   return (
     <div className="space-y-4">
       <Kpis items={[
-        { k: "Processos", v: jurimetryAggregate.processes.toLocaleString("pt-BR") },
-        { k: "Pedidos", v: jurimetryAggregate.claims.toLocaleString("pt-BR") },
-        { k: "Taxa de êxito", v: `${jurimetryAggregate.successPct}%` },
-        { k: "Qualidade cadastro", v: `${jurimetryAggregate.qualityPct}%` },
+        { k: "Processos", v: jurimetryAggregates.processes.toLocaleString("pt-BR") },
+        { k: "Pedidos", v: jurimetryAggregates.claims.toLocaleString("pt-BR") },
+        { k: "Taxa de êxito", v: `${jurimetryAggregates.successPct}%` },
+        { k: "Qualidade cadastro", v: `${jurimetryAggregates.qualityPct}%` },
       ]} />
       <Section title="Top 8 pedidos">
         <ChartBox><BarChart data={top}><CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 10%)" /><XAxis dataKey="name" fontSize={10} stroke="oklch(0.68 0.02 260)" /><YAxis fontSize={10} stroke="oklch(0.68 0.02 260)" /><Tooltip contentStyle={CARD_STYLE} /><Bar dataKey="count" fill={COLORS.primary} radius={[6, 6, 0, 0]} /></BarChart></ChartBox>
