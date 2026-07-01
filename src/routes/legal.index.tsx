@@ -18,17 +18,20 @@ export const Route = createFileRoute("/legal/")({
 
 function LegalList() {
   const legal = useStore((s) => s.legal);
+  const activeCompanyId = useStore((s) => s.activeCompanyId);
   const [search, setSearch] = useState("");
   const [risk, setRisk] = useState("all");
   const [status, setStatus] = useState("all");
+  const [company, setCompany] = useState<string>(activeCompanyId);
   const navigate = useNavigate();
 
   const filtered = useMemo(() => legal.filter((a) => {
+    if (company !== "all" && a.companyId !== company) return false;
     if (risk !== "all" && a.risk !== risk) return false;
     if (status !== "all" && a.validationStatus !== status) return false;
     if (search && !`${a.processNumber} ${a.claimant} ${a.defendant}`.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
-  }), [legal, risk, status, search]);
+  }), [legal, risk, status, search, company]);
 
   async function createMock() {
     const t = toast.loading("Gerando análise jurídica…");
