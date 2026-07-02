@@ -15,6 +15,7 @@ const routeLabels: Record<string, string> = {
   "/legal": "Legal Engine",
   "/jurimetry": "Jurimetria",
   "/tax": "Tax Engine",
+  "/tax-confrontation-matrix": "Matriz de Confrontos Fiscais",
   "/decision": "Decision Engine",
   "/validations": "Validações",
   "/knowledge-graph": "Knowledge Graph",
