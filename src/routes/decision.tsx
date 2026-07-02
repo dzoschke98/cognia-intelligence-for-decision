@@ -4,8 +4,10 @@ import { useStore } from "@/lib/cognia/store";
 import { RiskBadge } from "@/components/cognia/Badges";
 import { Button } from "@/components/ui/button";
 import { fmtBRL } from "@/lib/cognia/format";
-import { Brain, AlertTriangle, ArrowRight, Radar } from "lucide-react";
+import { Brain, AlertTriangle, ArrowRight, Radar, Grid3x3 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { tcmRecommendations } from "@/lib/cognia/taxMatrixMock";
+import { fmtBRL as _fmt } from "@/lib/cognia/format";
 
 export const Route = createFileRoute("/decision")({
   head: () => ({ meta: [{ title: "Decision Engine — CognIA" }] }),
