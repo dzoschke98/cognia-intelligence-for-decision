@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RiskBadge, StatusBadge, ConfidenceIndicator } from "@/components/cognia/Badges";
 import { fmtBRL, fmtDate } from "@/lib/cognia/format";
-import { Plus, Search, Receipt } from "lucide-react";
+import { Plus, Search, Receipt, Grid3x3 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { SummaryFooter } from "@/components/cognia/SummaryFooter";
 
