@@ -18,7 +18,7 @@ export const Route = createFileRoute("/reports")({
   component: () => <AppShell><Reports /></AppShell>,
 });
 
-type ReportId = "r0" | "r1" | "r2" | "r3" | "r4" | "r5";
+type ReportId = "r0" | "r1" | "r2" | "r3" | "r4" | "r5" | "r6";
 
 const reportsMeta: { id: ReportId; title: string; icon: React.ElementType; summary: string; owner: string }[] = [
   { id: "r0", title: "Relatório de Jurimetria Trabalhista", icon: LineIcon, summary: "Visão geral, análise por pedido, tendências e qualidade do cadastro.", owner: "Renata Almeida" },
@@ -27,6 +27,7 @@ const reportsMeta: { id: ReportId; title: string; icon: React.ElementType; summa
   { id: "r3", title: "Relatório Integrado CFO", icon: FileBarChart, summary: "Visão consolidada para o CFO — risco + oportunidade.", owner: "Mariana Costa" },
   { id: "r4", title: "Relatório de Validações", icon: CheckCircle2, summary: "Status e SLA de validações humanas em andamento.", owner: "Davi Fadel" },
   { id: "r5", title: "Relatório de Riscos e Oportunidades", icon: TrendingUp, summary: "Matriz de impacto x urgência priorizada.", owner: "Delmer Zoschke" },
+  { id: "r6", title: "Relatório da Matriz de Confrontos Fiscais", icon: Receipt, summary: "Cruzamentos, oportunidades, contingências e Reforma Tributária.", owner: "Nathan Endrigo" },
 ];
 
 const COLORS = { primary: "#2563EB", cyan: "#00C2BA", purple: "#7C3AED", success: "#22C55E", warning: "#FACC15", risk: "#EF4444", orange: "#F97316" };
