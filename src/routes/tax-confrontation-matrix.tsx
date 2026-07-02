@@ -690,8 +690,8 @@ function ContingenciesTab() {
         <ResponsiveContainer width="100%" height={280}>
           <ScatterChart>
             <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
-            <XAxis type="number" dataKey="x" name="Probabilidade" domain={[0, 4]} ticks={[1, 2, 3]} tickFormatter={(v) => ({ 1: "Baixa", 2: "Média", 3: "Alta" }[v] ?? "")} tick={{ fontSize: 11 }} />
-            <YAxis type="number" dataKey="y" name="Severidade" domain={[0, 5]} ticks={[1, 2, 3, 4]} tickFormatter={(v) => ({ 1: "Baixo", 2: "Médio", 3: "Alto", 4: "Crítico" }[v] ?? "")} tick={{ fontSize: 11 }} />
+            <XAxis type="number" dataKey="x" name="Probabilidade" domain={[0, 4]} ticks={[1, 2, 3]} tickFormatter={(v: number) => (["", "Baixa", "Média", "Alta"][v] ?? "")} tick={{ fontSize: 11 }} />
+            <YAxis type="number" dataKey="y" name="Severidade" domain={[0, 5]} ticks={[1, 2, 3, 4]} tickFormatter={(v: number) => (["", "Baixo", "Médio", "Alto", "Crítico"][v] ?? "")} tick={{ fontSize: 11 }} />
             <ZAxis type="number" dataKey="z" range={[60, 400]} />
             <Tooltip contentStyle={CARD} cursor={{ strokeDasharray: "3 3" }} formatter={(_v, _n, p: any) => [fmtBRL(p.payload.z), p.payload.name]} />
             <Scatter data={scatter} fill={COLORS.risk} />
