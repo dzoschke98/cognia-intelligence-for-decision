@@ -55,9 +55,14 @@ function TaxList() {
           <h1 className="text-3xl font-semibold tracking-tight">Diagnósticos tributários</h1>
           <p className="text-sm text-muted-foreground">Análise simulada de SPED/XML com identificação de inconsistências e oportunidades.</p>
         </div>
-        <Button onClick={createMock} className="bg-gradient-to-r from-primary to-purple text-white">
-          <Plus className="mr-2 h-4 w-4" /> Novo diagnóstico tributário
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Link to="/tax-confrontation-matrix" className="inline-flex items-center gap-1.5 rounded-md border border-cyan/30 bg-cyan/10 px-3 py-2 text-sm text-cyan transition hover:bg-cyan/20">
+            <Grid3x3 className="h-4 w-4" /> Abrir Matriz de Confrontos Fiscais
+          </Link>
+          <Button onClick={createMock} className="bg-gradient-to-r from-primary to-purple text-white">
+            <Plus className="mr-2 h-4 w-4" /> Novo diagnóstico tributário
+          </Button>
+        </div>
       </div>
 
       <div className="glass-card flex flex-wrap items-center gap-3 p-3">
