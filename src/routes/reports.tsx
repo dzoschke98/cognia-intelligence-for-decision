@@ -91,6 +91,7 @@ function ReportDialog({ id, title, onClose }: { id: ReportId; title: string; onC
           {id === "r3" && <R3 />}
           {id === "r4" && <R4 />}
           {id === "r5" && <R5 />}
+          {id === "r6" && <R6 />}
           <p className="text-[10px] italic text-muted-foreground">
             Relatório gerado com dados mockados para demonstração do MVP.
           </p>
