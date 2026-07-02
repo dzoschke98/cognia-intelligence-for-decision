@@ -12,13 +12,14 @@ import {
   LineChart, Line, ComposedChart, Legend, ScatterChart, Scatter, ZAxis,
 } from "recharts";
 import { jurimetryClaims, jurimetryHistory, jurimetryByCity, jurimetryAggregates } from "@/lib/cognia/radarMock";
+import { tcmKpis, tcmOpportunities, tcmContingencies, tcmRecommendations, tcmTributeEvolution } from "@/lib/cognia/taxMatrixMock";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({ meta: [{ title: "Relatórios — CognIA" }] }),
   component: () => <AppShell><Reports /></AppShell>,
 });
 
-type ReportId = "r0" | "r1" | "r2" | "r3" | "r4" | "r5";
+type ReportId = "r0" | "r1" | "r2" | "r3" | "r4" | "r5" | "r6";
 
 const reportsMeta: { id: ReportId; title: string; icon: React.ElementType; summary: string; owner: string }[] = [
   { id: "r0", title: "Relatório de Jurimetria Trabalhista", icon: LineIcon, summary: "Visão geral, análise por pedido, tendências e qualidade do cadastro.", owner: "Renata Almeida" },
@@ -27,6 +28,7 @@ const reportsMeta: { id: ReportId; title: string; icon: React.ElementType; summa
   { id: "r3", title: "Relatório Integrado CFO", icon: FileBarChart, summary: "Visão consolidada para o CFO — risco + oportunidade.", owner: "Mariana Costa" },
   { id: "r4", title: "Relatório de Validações", icon: CheckCircle2, summary: "Status e SLA de validações humanas em andamento.", owner: "Davi Fadel" },
   { id: "r5", title: "Relatório de Riscos e Oportunidades", icon: TrendingUp, summary: "Matriz de impacto x urgência priorizada.", owner: "Delmer Zoschke" },
+  { id: "r6", title: "Relatório da Matriz de Confrontos Fiscais", icon: Receipt, summary: "Cruzamentos, oportunidades, contingências e Reforma Tributária.", owner: "Nathan Endrigo" },
 ];
 
 const COLORS = { primary: "#2563EB", cyan: "#00C2BA", purple: "#7C3AED", success: "#22C55E", warning: "#FACC15", risk: "#EF4444", orange: "#F97316" };
@@ -90,6 +92,7 @@ function ReportDialog({ id, title, onClose }: { id: ReportId; title: string; onC
           {id === "r3" && <R3 />}
           {id === "r4" && <R4 />}
           {id === "r5" && <R5 />}
+          {id === "r6" && <R6 />}
           <p className="text-[10px] italic text-muted-foreground">
             Relatório gerado com dados mockados para demonstração do MVP.
           </p>
@@ -298,6 +301,35 @@ function R5() {
       </Section>
       <Section title="Ordenado por prioridade">
         <MiniTable head={["Título", "Origem", "Impacto", "Score"]} rows={[...decisions].sort((a, b) => b.priorityScore - a.priorityScore).slice(0, 8).map((d) => [d.title, d.origin, fmtBRL(d.financialImpact), String(d.priorityScore)])} />
+      </Section>
+    </div>
+  );
+}
+
+function R6() {
+  const oppTotal = tcmOpportunities.reduce((s, o) => s + o.potential, 0);
+  const contTotal = tcmContingencies.reduce((s, c) => s + c.exposure, 0);
+  const byTribute = ["ICMS", "IPI", "PIS/COFINS", "IRPJ/CSLL", "Previdenciário"].map((t) => ({
+    name: t,
+    Oportunidades: tcmOpportunities.filter((o) => o.tribute === t).reduce((s, o) => s + o.potential, 0),
+    Contingências: tcmContingencies.filter((c) => c.tribute === t).reduce((s, c) => s + c.exposure, 0),
+  }));
+  return (
+    <div className="space-y-4">
+      <Kpis items={[
+        { k: "Receita analisada", v: fmtBRL(tcmKpis.grossRevenue) },
+        { k: "Oportunidades", v: fmtBRL(oppTotal) },
+        { k: "Contingências", v: fmtBRL(contTotal) },
+        { k: "Alíquota efetiva", v: `${tcmKpis.effectiveRateCurrent}% → ${tcmKpis.effectiveRateAfter}%` },
+      ]} />
+      <Section title="Oportunidades × Contingências por tributo">
+        <ChartBox h={240}><BarChart data={byTribute}><CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 10%)" /><XAxis dataKey="name" fontSize={10} stroke="oklch(0.68 0.02 260)" /><YAxis fontSize={10} stroke="oklch(0.68 0.02 260)" tickFormatter={(v) => `${(v / 1_000_000).toFixed(1)}M`} /><Tooltip contentStyle={CARD_STYLE} formatter={(v: number) => fmtBRL(v)} /><Legend /><Bar dataKey="Oportunidades" fill={COLORS.cyan} /><Bar dataKey="Contingências" fill={COLORS.risk} /></BarChart></ChartBox>
+      </Section>
+      <Section title="Evolução histórica de tributos">
+        <ChartBox h={220}><LineChart data={tcmTributeEvolution}><CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 10%)" /><XAxis dataKey="year" fontSize={10} stroke="oklch(0.68 0.02 260)" /><YAxis fontSize={10} stroke="oklch(0.68 0.02 260)" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} /><Tooltip contentStyle={CARD_STYLE} formatter={(v: number) => fmtBRL(v)} /><Legend /><Line dataKey="Total" stroke={COLORS.primary} strokeWidth={2} /></LineChart></ChartBox>
+      </Section>
+      <Section title="Recomendações executivas">
+        <MiniTable head={["Tributo", "Ação", "Impacto", "Confiança"]} rows={tcmRecommendations.map((r) => [r.tribute, r.action, fmtBRL(r.impact), `${r.confidence}%`])} />
       </Section>
     </div>
   );

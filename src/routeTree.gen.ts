@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ValidationsRouteImport } from './routes/validations'
+import { Route as TaxConfrontationMatrixRouteImport } from './routes/tax-confrontation-matrix'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as LoginRouteImport } from './routes/login'
@@ -31,6 +32,11 @@ import { Route as LegalIdRouteImport } from './routes/legal.$id'
 const ValidationsRoute = ValidationsRouteImport.update({
   id: '/validations',
   path: '/validations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TaxConfrontationMatrixRoute = TaxConfrontationMatrixRouteImport.update({
+  id: '/tax-confrontation-matrix',
+  path: '/tax-confrontation-matrix',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/tax-confrontation-matrix': typeof TaxConfrontationMatrixRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/tax-confrontation-matrix': typeof TaxConfrontationMatrixRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
+  '/tax-confrontation-matrix': typeof TaxConfrontationMatrixRoute
   '/validations': typeof ValidationsRoute
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reports'
     | '/settings'
+    | '/tax-confrontation-matrix'
     | '/validations'
     | '/legal/$id'
     | '/radar/$id'
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reports'
     | '/settings'
+    | '/tax-confrontation-matrix'
     | '/validations'
     | '/legal/$id'
     | '/radar/$id'
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reports'
     | '/settings'
+    | '/tax-confrontation-matrix'
     | '/validations'
     | '/legal/$id'
     | '/radar/$id'
@@ -255,6 +267,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
+  TaxConfrontationMatrixRoute: typeof TaxConfrontationMatrixRoute
   ValidationsRoute: typeof ValidationsRoute
   LegalIdRoute: typeof LegalIdRoute
   RadarIdRoute: typeof RadarIdRoute
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/validations'
       fullPath: '/validations'
       preLoaderRoute: typeof ValidationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tax-confrontation-matrix': {
+      id: '/tax-confrontation-matrix'
+      path: '/tax-confrontation-matrix'
+      fullPath: '/tax-confrontation-matrix'
+      preLoaderRoute: typeof TaxConfrontationMatrixRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -407,6 +427,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
+  TaxConfrontationMatrixRoute: TaxConfrontationMatrixRoute,
   ValidationsRoute: ValidationsRoute,
   LegalIdRoute: LegalIdRoute,
   RadarIdRoute: RadarIdRoute,

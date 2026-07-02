@@ -4,8 +4,10 @@ import { useStore } from "@/lib/cognia/store";
 import { RiskBadge } from "@/components/cognia/Badges";
 import { Button } from "@/components/ui/button";
 import { fmtBRL } from "@/lib/cognia/format";
-import { Brain, AlertTriangle, ArrowRight, Radar } from "lucide-react";
+import { Brain, AlertTriangle, ArrowRight, Radar, Grid3x3 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { tcmRecommendations } from "@/lib/cognia/taxMatrixMock";
+
 
 export const Route = createFileRoute("/decision")({
   head: () => ({ meta: [{ title: "Decision Engine — CognIA" }] }),
@@ -52,6 +54,29 @@ function Decision() {
               <div className="mt-2 text-[11px] text-muted-foreground">{r.impactedCount} {r.impactedKind} · {r.source}</div>
               <div className="mt-2 text-[11px]"><span className="text-cyan">Ação:</span> {r.suggestedAction}</div>
             </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="glass-card p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-cyan">
+            <Grid3x3 className="h-3.5 w-3.5" /> Recomendações da Matriz de Confrontos Fiscais
+          </div>
+          <Link to="/tax-confrontation-matrix" className="text-xs text-cyan hover:underline">Abrir Matriz →</Link>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {tcmRecommendations.map((r) => (
+            <div key={r.id} className="rounded-lg border border-white/5 bg-white/5 p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase text-cyan">{r.tribute}</span>
+                <RiskBadge risk={r.urgency} />
+              </div>
+              <div className="mt-1 text-sm font-medium line-clamp-2">{r.action}</div>
+              <div className="mt-2 text-[11px] text-muted-foreground">Impacto {fmtBRL(r.impact)} · Confiança {r.confidence}%</div>
+              <div className="mt-1 text-[11px] text-muted-foreground">Origem: Matriz de Confrontos Fiscais · {r.owner}</div>
+              <Link to="/tax-confrontation-matrix" className="mt-2 inline-block text-xs text-cyan hover:underline">Abrir na Matriz →</Link>
+            </div>
           ))}
         </div>
       </div>
