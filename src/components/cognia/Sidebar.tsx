@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/cognia/store";
 import {
   LayoutDashboard, FileText, Scale, Receipt, Brain, CheckCircle2,
-  Network, BarChart3, ShieldCheck, Settings, Users2, Hexagon, Radar, LineChart,
+  Network, BarChart3, ShieldCheck, Settings, Users2, Hexagon, Radar, LineChart, Grid3x3,
 } from "lucide-react";
 
 const items = [
@@ -13,6 +13,7 @@ const items = [
   { to: "/legal", label: "Legal Engine", icon: Scale },
   { to: "/jurimetry", label: "Jurimetria Trabalhista", icon: LineChart },
   { to: "/tax", label: "Tax Engine", icon: Receipt },
+  { to: "/tax-confrontation-matrix", label: "Matriz de Confrontos Fiscais", icon: Grid3x3 },
   { to: "/decision", label: "Decision Engine", icon: Brain },
   { to: "/validations", label: "Validações", icon: CheckCircle2 },
   { to: "/knowledge-graph", label: "Knowledge Graph", icon: Network },
