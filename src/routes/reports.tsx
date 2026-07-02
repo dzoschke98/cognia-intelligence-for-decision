@@ -306,6 +306,35 @@ function R5() {
   );
 }
 
+function R6() {
+  const oppTotal = tcmOpportunities.reduce((s, o) => s + o.potential, 0);
+  const contTotal = tcmContingencies.reduce((s, c) => s + c.exposure, 0);
+  const byTribute = ["ICMS", "IPI", "PIS/COFINS", "IRPJ/CSLL", "Previdenciário"].map((t) => ({
+    name: t,
+    Oportunidades: tcmOpportunities.filter((o) => o.tribute === t).reduce((s, o) => s + o.potential, 0),
+    Contingências: tcmContingencies.filter((c) => c.tribute === t).reduce((s, c) => s + c.exposure, 0),
+  }));
+  return (
+    <div className="space-y-4">
+      <Kpis items={[
+        { k: "Receita analisada", v: fmtBRL(tcmKpis.grossRevenue) },
+        { k: "Oportunidades", v: fmtBRL(oppTotal) },
+        { k: "Contingências", v: fmtBRL(contTotal) },
+        { k: "Alíquota efetiva", v: `${tcmKpis.effectiveRateCurrent}% → ${tcmKpis.effectiveRateAfter}%` },
+      ]} />
+      <Section title="Oportunidades × Contingências por tributo">
+        <ChartBox h={240}><BarChart data={byTribute}><CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 10%)" /><XAxis dataKey="name" fontSize={10} stroke="oklch(0.68 0.02 260)" /><YAxis fontSize={10} stroke="oklch(0.68 0.02 260)" tickFormatter={(v) => `${(v / 1_000_000).toFixed(1)}M`} /><Tooltip contentStyle={CARD_STYLE} formatter={(v: number) => fmtBRL(v)} /><Legend /><Bar dataKey="Oportunidades" fill={COLORS.cyan} /><Bar dataKey="Contingências" fill={COLORS.risk} /></BarChart></ChartBox>
+      </Section>
+      <Section title="Evolução histórica de tributos">
+        <ChartBox h={220}><LineChart data={tcmTributeEvolution}><CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 10%)" /><XAxis dataKey="year" fontSize={10} stroke="oklch(0.68 0.02 260)" /><YAxis fontSize={10} stroke="oklch(0.68 0.02 260)" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} /><Tooltip contentStyle={CARD_STYLE} formatter={(v: number) => fmtBRL(v)} /><Legend /><Line dataKey="Total" stroke={COLORS.primary} strokeWidth={2} /></LineChart></ChartBox>
+      </Section>
+      <Section title="Recomendações executivas">
+        <MiniTable head={["Tributo", "Ação", "Impacto", "Confiança"]} rows={tcmRecommendations.map((r) => [r.tribute, r.action, fmtBRL(r.impact), `${r.confidence}%`])} />
+      </Section>
+    </div>
+  );
+}
+
 function ChartBox({ children, h = 280 }: { children: React.ReactElement; h?: number }) {
   return <div style={{ height: h }}><ResponsiveContainer width="100%" height="100%">{children}</ResponsiveContainer></div>;
 }
