@@ -10,13 +10,19 @@ import {
 import {
   initialRadarUpdates, jurimetryPendings as seedPendings, initialRadarLogs, initialJurimetryLogs,
 } from "./radarMock";
+import {
+  initialSyncSources, initialMovements, initialDrafts, initialAgenda, initialWorkQueue,
+} from "./operationsMock";
 import type {
   Company, User, DocumentItem, LegalAnalysis, TaxAnalysis,
   DecisionRecommendation, AuditLog, ValidationStatus, RiskLevel, EngineType, DocumentType,
-  RadarUpdate, RadarStatus, JurimetryPending, JurimetryFieldStatus,
+  RadarUpdate, JurimetryPending,
+  SyncSource, ProcessMovement, LegalDraft, AgendaEvent, WorkQueueItem,
+  MovementAnalysisStatus, DraftStatus, AgendaStatus, WorkQueueStatus,
 } from "./types";
 
-const KEY = "cognia.state.v2";
+const KEY = "cognia.state.v3";
+const LEGACY_KEY = "cognia.state.v2";
 
 interface State {
   documents: DocumentItem[];
@@ -28,6 +34,12 @@ interface State {
   pendings: JurimetryPending[];
   currentUserEmail: string | null;
   activeCompanyId: string;
+  // Novos módulos
+  sources: SyncSource[];
+  movements: ProcessMovement[];
+  drafts: LegalDraft[];
+  agenda: AgendaEvent[];
+  workQueue: WorkQueueItem[];
 }
 
 const initial: State = {
@@ -40,6 +52,11 @@ const initial: State = {
   pendings: seedPendings,
   currentUserEmail: null,
   activeCompanyId: "co-1",
+  sources: initialSyncSources,
+  movements: initialMovements,
+  drafts: initialDrafts,
+  agenda: initialAgenda,
+  workQueue: initialWorkQueue,
 };
 
 export function setActiveCompany(id: string) {
@@ -58,8 +75,11 @@ function load(): State {
   if (typeof window === "undefined") return initial;
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return initial;
-    return { ...initial, ...JSON.parse(raw) };
+    if (raw) return { ...initial, ...JSON.parse(raw) };
+    // Migrate v2 → v3: preserve prior mutations, add new module defaults
+    const legacy = localStorage.getItem(LEGACY_KEY);
+    if (legacy) return { ...initial, ...JSON.parse(legacy) };
+    return initial;
   } catch {
     return initial;
   }
