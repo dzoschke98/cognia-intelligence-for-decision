@@ -354,3 +354,157 @@ export function setPendingStatus(id: string, status: import("./types").Jurimetry
 export function logJurimetry(action: string) {
   addLog({ action, resource: "jurimetry", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
 }
+
+// ===== Motor Atualizador de Processos =====
+export function runSourceSyncMock(sourceId: string) {
+  const src = state.sources.find((s) => s.id === sourceId);
+  if (!src) return;
+  const now = new Date().toISOString();
+  const added = 3 + Math.floor(Math.random() * 6);
+  const newMovs: ProcessMovement[] = Array.from({ length: added }, (_, i) => {
+    const rBefore = 40 + Math.floor(Math.random() * 40);
+    const rAfter = Math.max(5, Math.min(98, rBefore + Math.floor(Math.random() * 25) - 8));
+    const vBefore = 40000 + Math.floor(Math.random() * 300000);
+    return {
+      id: uid("mov"),
+      processNumber: `${String(9000 + Math.floor(Math.random() * 999)).padStart(7, "0")}-${String(10 + i).padStart(2, "0")}.2026.5.09.0001`,
+      companyId: state.activeCompanyId,
+      sourceId: src.id,
+      sourceName: src.name,
+      date: now,
+      type: "Prazo aberto",
+      summary: `Nova movimentação importada de ${src.name}. Requer análise.`,
+      impact: "Recalcular risco",
+      status: "novo",
+      riskBefore: rBefore,
+      riskAfter: rAfter,
+      valueBefore: vBefore,
+      valueAfter: Math.round(vBefore * (1 + (rAfter - rBefore) / 100)),
+      confidence: 75 + Math.floor(Math.random() * 20),
+      reason: `Sincronização mockada de ${src.name}. Impacto sugerido: recalcular risco.`,
+      responsible: "Renata Almeida",
+    };
+  });
+  state = {
+    ...state,
+    sources: state.sources.map((s) => s.id === sourceId ? { ...s, lastRunAt: now, importedMovements: s.importedMovements + added } : s),
+    movements: [...newMovs, ...state.movements],
+  };
+  addLog({ action: "process_update_engine.source.executed", resource: `source:${src.name}`, engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+  newMovs.forEach(() => addLog({ action: "process_update_engine.movement.imported", resource: "movement", engine: "legal", engineVersion: "legal-engine-v1.0.0" }));
+  emit();
+  return added;
+}
+export function setMovementStatus(id: string, status: MovementAnalysisStatus) {
+  state = { ...state, movements: state.movements.map((m) => m.id === id ? { ...m, status } : m) };
+  const actionMap: Record<MovementAnalysisStatus, string> = {
+    novo: "process_update_engine.movement.imported",
+    reprocessado: "process_update_engine.analysis.recalculated",
+    validado: "process_update_engine.validation.requested",
+    ignorado: "process_update_engine.movement.imported",
+  };
+  addLog({ action: actionMap[status], resource: "movement", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+  emit();
+}
+export function logProcessEngine(action: string) {
+  addLog({ action, resource: "process_update_engine", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+}
+
+// ===== Gera Minutas e Petições =====
+export function createDraft(input: Partial<LegalDraft> & { type: string; area: LegalDraft["area"]; pole: LegalDraft["pole"]; clientName: string }) {
+  const now = new Date().toISOString();
+  const d: LegalDraft = {
+    id: uid("dr"),
+    type: input.type,
+    area: input.area,
+    pole: input.pole,
+    clientName: input.clientName,
+    counterparty: input.counterparty ?? "—",
+    processNumber: input.processNumber,
+    court: input.court ?? "—",
+    uf: input.uf ?? "SP",
+    summary: input.summary ?? "",
+    objective: input.objective ?? "",
+    urgency: input.urgency ?? "medio",
+    responsible: input.responsible ?? (currentUser()?.name ?? "Especialista"),
+    status: "rascunho",
+    createdAt: now,
+    updatedAt: now,
+    content: input.content ?? "",
+    totalValue: input.totalValue ?? 0,
+    linkedProcessId: input.linkedProcessId,
+    companyId: input.companyId ?? state.activeCompanyId,
+  };
+  state = { ...state, drafts: [d, ...state.drafts] };
+  addLog({ action: "legal_draft.created", resource: "legal_draft", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+  addLog({ action: "legal_draft.generated", resource: "legal_draft", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+  emit();
+  return d;
+}
+export function updateDraft(id: string, patch: Partial<LegalDraft>) {
+  state = {
+    ...state,
+    drafts: state.drafts.map((d) => d.id === id ? { ...d, ...patch, updatedAt: new Date().toISOString() } : d),
+  };
+  addLog({ action: "legal_draft.edited", resource: "legal_draft", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+  emit();
+}
+export function setDraftStatus(id: string, status: DraftStatus) {
+  state = {
+    ...state,
+    drafts: state.drafts.map((d) => d.id === id ? { ...d, status, updatedAt: new Date().toISOString() } : d),
+  };
+  const map: Record<DraftStatus, string> = {
+    rascunho: "legal_draft.edited",
+    em_revisao: "legal_draft.sent_to_review",
+    aprovada: "legal_draft.approved",
+    rejeitada: "legal_draft.rejected",
+    vinculada: "legal_draft.linked_to_process",
+    arquivada: "legal_draft.edited",
+  };
+  addLog({ action: map[status], resource: "legal_draft", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+  emit();
+}
+export function logDraft(action: string) {
+  addLog({ action, resource: "legal_draft", engine: "legal", engineVersion: "legal-engine-v1.0.0" });
+}
+
+// ===== Agenda Geral =====
+export function setAgendaStatus(id: string, status: AgendaStatus) {
+  state = { ...state, agenda: state.agenda.map((e) => e.id === id ? { ...e, status } : e) };
+  const map: Record<AgendaStatus, string> = {
+    pendente: "general_agenda.event.created",
+    em_andamento: "general_agenda.event.created",
+    concluido: "general_agenda.event.completed",
+    atrasado: "general_agenda.event.created",
+    reagendado: "general_agenda.event.rescheduled",
+  };
+  addLog({ action: map[status], resource: "agenda_event", engine: "decision", engineVersion: "decision-engine-v1.0.0" });
+  emit();
+}
+export function createAgendaEvent(input: Omit<AgendaEvent, "id">) {
+  const ev: AgendaEvent = { ...input, id: uid("ev") };
+  state = { ...state, agenda: [ev, ...state.agenda] };
+  addLog({ action: "general_agenda.event.created", resource: "agenda_event", engine: "decision", engineVersion: "decision-engine-v1.0.0" });
+  emit();
+  return ev;
+}
+export function logAgenda(action: string) {
+  addLog({ action, resource: "general_agenda", engine: "decision", engineVersion: "decision-engine-v1.0.0" });
+}
+
+// ===== Central de Pendências =====
+export function setWorkQueueStatus(id: string, status: WorkQueueStatus) {
+  state = { ...state, workQueue: state.workQueue.map((w) => w.id === id ? { ...w, status } : w) };
+  addLog({ action: `work_queue.item.${status}`, resource: "work_queue", engine: "decision", engineVersion: "decision-engine-v1.0.0" });
+  emit();
+}
+export function delegateWorkQueue(id: string, to: string) {
+  state = { ...state, workQueue: state.workQueue.map((w) => w.id === id ? { ...w, responsible: to, status: "delegada" } : w) };
+  addLog({ action: "work_queue.item.delegated", resource: "work_queue", engine: "decision", engineVersion: "decision-engine-v1.0.0" });
+  emit();
+}
+export function logWorkQueue(action: string) {
+  addLog({ action, resource: "work_queue", engine: "decision", engineVersion: "decision-engine-v1.0.0" });
+}
+
