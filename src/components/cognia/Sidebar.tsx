@@ -44,13 +44,13 @@ export function Sidebar() {
         </div>
       </Link>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pb-6">
-        {items.map(({ to, label, icon: Icon }) => {
-          // Exact match, plus child paths only via a real "/" separator
-          // (prevents e.g. "/tax-confrontation-matrix" from matching "/tax").
+        {items
+          .filter((it) => !("adminOnly" in it && it.adminOnly) || currentUser()?.role === "Administrador")
+          .map(({ to, label, icon: Icon }) => {
           const active = path === to || path.startsWith(`${to}/`);
           const isValidations = to === "/validations";
           return (
-            <Link key={to} to={to}
+            <Link key={to} to={to as string}
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all",
                 active
