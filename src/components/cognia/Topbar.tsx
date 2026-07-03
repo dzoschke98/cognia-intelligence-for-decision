@@ -11,9 +11,12 @@ import { relativeTime } from "@/lib/cognia/format";
 const routeLabels: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/radar": "Radar de Inteligência",
+  "/general-agenda": "Agenda Geral",
+  "/work-queue": "Central de Pendências",
   "/documents": "Documentos",
   "/legal": "Legal Engine",
   "/jurimetry": "Jurimetria",
+  "/legal-drafts": "Gera Minutas e Petições",
   "/tax": "Tax Engine",
   "/tax-confrontation-matrix": "Matriz de Confrontos Fiscais",
   "/decision": "Decision Engine",

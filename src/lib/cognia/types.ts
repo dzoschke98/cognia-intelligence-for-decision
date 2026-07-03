@@ -7,6 +7,129 @@ export type DocumentStatus = "pendente" | "processando" | "concluido" | "falhou"
 export type DocumentType = "juridico" | "tributario" | "outro";
 export type UserRole = "CEO" | "CFO" | "Diretor Jurídico" | "Diretor Tributário" | "Administrador";
 
+// ===== Novos tipos para módulos operacionais =====
+export type ClientPole = "polo_ativo" | "polo_passivo" | "terceiro" | "consultivo";
+export type LegalStrategy =
+  | "ajuizar" | "defender" | "negociar" | "produzir_prova"
+  | "reduzir_risco" | "recuperar_valor" | "encerrar" | "monitorar";
+
+export type SyncSourceStatus = "ativo" | "pausado" | "falha" | "mockado";
+export interface SyncSource {
+  id: UUID;
+  name: string;
+  status: SyncSourceStatus;
+  lastRunAt: string;
+  linkedProcesses: number;
+  importedMovements: number;
+  successRate: number; // 0-100
+}
+
+export type MovementType =
+  | "Audiência designada" | "Sentença publicada" | "Prazo aberto" | "Contestação juntada"
+  | "Réplica apresentada" | "Perícia designada" | "Decisão interlocutória" | "Recurso interposto"
+  | "Acordo homologado" | "Arquivamento" | "Cumprimento de sentença";
+export type MovementImpact =
+  | "Recalcular risco" | "Atualizar probabilidade de acordo" | "Atualizar valor projetado"
+  | "Criar prazo na Agenda Geral" | "Solicitar validação humana" | "Gerar sugestão de peça"
+  | "Sem impacto relevante";
+export type MovementAnalysisStatus = "novo" | "reprocessado" | "validado" | "ignorado";
+
+export interface ProcessMovement {
+  id: UUID;
+  processNumber: string;
+  companyId: UUID;
+  sourceId: UUID;
+  sourceName: string;
+  date: string;
+  type: MovementType;
+  summary: string;
+  impact: MovementImpact;
+  status: MovementAnalysisStatus;
+  riskBefore: number;
+  riskAfter: number;
+  valueBefore: number;
+  valueAfter: number;
+  confidence: number;
+  reason: string;
+  responsible: string;
+}
+
+export type DraftPole = ClientPole;
+export type DraftArea = "Trabalhista" | "Cível" | "Tributário" | "Administrativo";
+export type DraftStatus = "rascunho" | "em_revisao" | "aprovada" | "rejeitada" | "vinculada" | "arquivada";
+export interface LegalDraft {
+  id: UUID;
+  type: string;              // ex: "Petição inicial trabalhista"
+  area: DraftArea;
+  pole: DraftPole;
+  clientName: string;
+  counterparty: string;
+  processNumber?: string;
+  court: string;
+  uf: string;
+  summary: string;
+  objective: string;
+  urgency: RiskLevel;
+  responsible: string;
+  status: DraftStatus;
+  createdAt: string;
+  updatedAt: string;
+  content: string;
+  totalValue: number;
+  linkedProcessId?: UUID;
+  companyId: UUID;
+}
+
+export type AgendaArea = "juridico" | "tributario" | "executivo" | "operacional";
+export type AgendaEventType =
+  | "audiencia" | "prazo_contestacao" | "prazo_replica" | "prazo_recurso"
+  | "prazo_manifestacao" | "prazo_documentos" | "pericia" | "reuniao"
+  | "revisao_minuta" | "validacao_ia" | "vencimento_tributario"
+  | "validacao_oportunidade" | "revisar_contingencia" | "validar_cruzamento" | "gerar_relatorio";
+export type AgendaStatus = "pendente" | "em_andamento" | "concluido" | "atrasado" | "reagendado";
+export type AgendaOrigin =
+  | "motor_atualizador" | "manual" | "sugestao_ia" | "gera_minutas"
+  | "malha_fiscal" | "validacao_humana" | "decision_engine";
+export interface AgendaEvent {
+  id: UUID;
+  title: string;
+  area: AgendaArea;
+  type: AgendaEventType;
+  relatedRef: string;
+  clientName: string;
+  companyId: UUID;
+  date: string;
+  time: string;
+  responsible: string;
+  priority: RiskLevel;
+  status: AgendaStatus;
+  origin: AgendaOrigin;
+  atRisk: boolean;
+  suggestedAction: string;
+}
+
+export type WorkQueueKind =
+  | "validacao_humana" | "sugestao_ia" | "prazo_critico" | "movimentacao_nova"
+  | "minuta_revisao" | "cruzamento_pendente" | "oportunidade_tributaria"
+  | "contingencia_sem_acao" | "dados_incompletos" | "baixa_confianca"
+  | "relatorio_pendente" | "tarefa_decision";
+export type WorkQueueStatus = "aberta" | "em_andamento" | "concluida" | "delegada";
+export interface WorkQueueItem {
+  id: UUID;
+  title: string;
+  kind: WorkQueueKind;
+  area: "juridico" | "tributario" | "executivo";
+  priority: RiskLevel;
+  responsible: string | null;
+  origin: AgendaOrigin;
+  status: WorkQueueStatus;
+  createdAt: string;
+  dueDate: string;
+  companyId: UUID;
+  detail: string;
+}
+
+
 export interface Company {
   id: UUID;
   name: string;

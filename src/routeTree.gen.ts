@@ -9,13 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkQueueRouteImport } from './routes/work-queue'
 import { Route as ValidationsRouteImport } from './routes/validations'
 import { Route as TaxConfrontationMatrixRouteImport } from './routes/tax-confrontation-matrix'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as LegalDraftsRouteImport } from './routes/legal-drafts'
 import { Route as KnowledgeGraphRouteImport } from './routes/knowledge-graph'
 import { Route as JurimetryRouteImport } from './routes/jurimetry'
+import { Route as GeneralAgendaRouteImport } from './routes/general-agenda'
 import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DecisionRouteImport } from './routes/decision'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -28,7 +31,13 @@ import { Route as LegalIndexRouteImport } from './routes/legal.index'
 import { Route as TaxIdRouteImport } from './routes/tax.$id'
 import { Route as RadarIdRouteImport } from './routes/radar.$id'
 import { Route as LegalIdRouteImport } from './routes/legal.$id'
+import { Route as AdminProcessUpdateEngineRouteImport } from './routes/admin.process-update-engine'
 
+const WorkQueueRoute = WorkQueueRouteImport.update({
+  id: '/work-queue',
+  path: '/work-queue',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ValidationsRoute = ValidationsRouteImport.update({
   id: '/validations',
   path: '/validations',
@@ -54,6 +63,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LegalDraftsRoute = LegalDraftsRouteImport.update({
+  id: '/legal-drafts',
+  path: '/legal-drafts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const KnowledgeGraphRoute = KnowledgeGraphRouteImport.update({
   id: '/knowledge-graph',
   path: '/knowledge-graph',
@@ -62,6 +76,11 @@ const KnowledgeGraphRoute = KnowledgeGraphRouteImport.update({
 const JurimetryRoute = JurimetryRouteImport.update({
   id: '/jurimetry',
   path: '/jurimetry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GeneralAgendaRoute = GeneralAgendaRouteImport.update({
+  id: '/general-agenda',
+  path: '/general-agenda',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocumentsRoute = DocumentsRouteImport.update({
@@ -124,21 +143,31 @@ const LegalIdRoute = LegalIdRouteImport.update({
   path: '/legal/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProcessUpdateEngineRoute =
+  AdminProcessUpdateEngineRouteImport.update({
+    id: '/process-update-engine',
+    path: '/process-update-engine',
+    getParentRoute: () => AdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/general-agenda': typeof GeneralAgendaRoute
   '/jurimetry': typeof JurimetryRoute
   '/knowledge-graph': typeof KnowledgeGraphRoute
+  '/legal-drafts': typeof LegalDraftsRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/tax-confrontation-matrix': typeof TaxConfrontationMatrixRoute
   '/validations': typeof ValidationsRoute
+  '/work-queue': typeof WorkQueueRoute
+  '/admin/process-update-engine': typeof AdminProcessUpdateEngineRoute
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
@@ -148,18 +177,22 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/general-agenda': typeof GeneralAgendaRoute
   '/jurimetry': typeof JurimetryRoute
   '/knowledge-graph': typeof KnowledgeGraphRoute
+  '/legal-drafts': typeof LegalDraftsRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/tax-confrontation-matrix': typeof TaxConfrontationMatrixRoute
   '/validations': typeof ValidationsRoute
+  '/work-queue': typeof WorkQueueRoute
+  '/admin/process-update-engine': typeof AdminProcessUpdateEngineRoute
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
@@ -170,18 +203,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
   '/documents': typeof DocumentsRoute
+  '/general-agenda': typeof GeneralAgendaRoute
   '/jurimetry': typeof JurimetryRoute
   '/knowledge-graph': typeof KnowledgeGraphRoute
+  '/legal-drafts': typeof LegalDraftsRoute
   '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/tax-confrontation-matrix': typeof TaxConfrontationMatrixRoute
   '/validations': typeof ValidationsRoute
+  '/work-queue': typeof WorkQueueRoute
+  '/admin/process-update-engine': typeof AdminProcessUpdateEngineRoute
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
@@ -198,13 +235,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/general-agenda'
     | '/jurimetry'
     | '/knowledge-graph'
+    | '/legal-drafts'
     | '/login'
     | '/reports'
     | '/settings'
     | '/tax-confrontation-matrix'
     | '/validations'
+    | '/work-queue'
+    | '/admin/process-update-engine'
     | '/legal/$id'
     | '/radar/$id'
     | '/tax/$id'
@@ -219,13 +260,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/general-agenda'
     | '/jurimetry'
     | '/knowledge-graph'
+    | '/legal-drafts'
     | '/login'
     | '/reports'
     | '/settings'
     | '/tax-confrontation-matrix'
     | '/validations'
+    | '/work-queue'
+    | '/admin/process-update-engine'
     | '/legal/$id'
     | '/radar/$id'
     | '/tax/$id'
@@ -240,13 +285,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/decision'
     | '/documents'
+    | '/general-agenda'
     | '/jurimetry'
     | '/knowledge-graph'
+    | '/legal-drafts'
     | '/login'
     | '/reports'
     | '/settings'
     | '/tax-confrontation-matrix'
     | '/validations'
+    | '/work-queue'
+    | '/admin/process-update-engine'
     | '/legal/$id'
     | '/radar/$id'
     | '/tax/$id'
@@ -257,18 +306,21 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuditLogsRoute: typeof AuditLogsRoute
   DashboardRoute: typeof DashboardRoute
   DecisionRoute: typeof DecisionRoute
   DocumentsRoute: typeof DocumentsRoute
+  GeneralAgendaRoute: typeof GeneralAgendaRoute
   JurimetryRoute: typeof JurimetryRoute
   KnowledgeGraphRoute: typeof KnowledgeGraphRoute
+  LegalDraftsRoute: typeof LegalDraftsRoute
   LoginRoute: typeof LoginRoute
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   TaxConfrontationMatrixRoute: typeof TaxConfrontationMatrixRoute
   ValidationsRoute: typeof ValidationsRoute
+  WorkQueueRoute: typeof WorkQueueRoute
   LegalIdRoute: typeof LegalIdRoute
   RadarIdRoute: typeof RadarIdRoute
   TaxIdRoute: typeof TaxIdRoute
@@ -279,6 +331,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/work-queue': {
+      id: '/work-queue'
+      path: '/work-queue'
+      fullPath: '/work-queue'
+      preLoaderRoute: typeof WorkQueueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/validations': {
       id: '/validations'
       path: '/validations'
@@ -314,6 +373,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/legal-drafts': {
+      id: '/legal-drafts'
+      path: '/legal-drafts'
+      fullPath: '/legal-drafts'
+      preLoaderRoute: typeof LegalDraftsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/knowledge-graph': {
       id: '/knowledge-graph'
       path: '/knowledge-graph'
@@ -326,6 +392,13 @@ declare module '@tanstack/react-router' {
       path: '/jurimetry'
       fullPath: '/jurimetry'
       preLoaderRoute: typeof JurimetryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/general-agenda': {
+      id: '/general-agenda'
+      path: '/general-agenda'
+      fullPath: '/general-agenda'
+      preLoaderRoute: typeof GeneralAgendaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/documents': {
@@ -412,23 +485,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/process-update-engine': {
+      id: '/admin/process-update-engine'
+      path: '/process-update-engine'
+      fullPath: '/admin/process-update-engine'
+      preLoaderRoute: typeof AdminProcessUpdateEngineRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminProcessUpdateEngineRoute: typeof AdminProcessUpdateEngineRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminProcessUpdateEngineRoute: AdminProcessUpdateEngineRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuditLogsRoute: AuditLogsRoute,
   DashboardRoute: DashboardRoute,
   DecisionRoute: DecisionRoute,
   DocumentsRoute: DocumentsRoute,
+  GeneralAgendaRoute: GeneralAgendaRoute,
   JurimetryRoute: JurimetryRoute,
   KnowledgeGraphRoute: KnowledgeGraphRoute,
+  LegalDraftsRoute: LegalDraftsRoute,
   LoginRoute: LoginRoute,
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   TaxConfrontationMatrixRoute: TaxConfrontationMatrixRoute,
   ValidationsRoute: ValidationsRoute,
+  WorkQueueRoute: WorkQueueRoute,
   LegalIdRoute: LegalIdRoute,
   RadarIdRoute: RadarIdRoute,
   TaxIdRoute: TaxIdRoute,
