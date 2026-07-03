@@ -1,17 +1,21 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import { useStore } from "@/lib/cognia/store";
+import { useStore, currentUser } from "@/lib/cognia/store";
 import {
   LayoutDashboard, FileText, Scale, Receipt, Brain, CheckCircle2,
   Network, BarChart3, ShieldCheck, Settings, Users2, Hexagon, Radar, LineChart, Grid3x3,
+  RefreshCw, PenSquare, CalendarDays, ListTodo,
 } from "lucide-react";
 
 const items = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/radar", label: "Radar de Inteligência", icon: Radar },
+  { to: "/general-agenda", label: "Agenda Geral", icon: CalendarDays },
+  { to: "/work-queue", label: "Central de Pendências", icon: ListTodo },
   { to: "/documents", label: "Documentos", icon: FileText },
   { to: "/legal", label: "Legal Engine", icon: Scale },
   { to: "/jurimetry", label: "Jurimetria Trabalhista", icon: LineChart },
+  { to: "/legal-drafts", label: "Gera Minutas e Petições", icon: PenSquare },
   { to: "/tax", label: "Tax Engine", icon: Receipt },
   { to: "/tax-confrontation-matrix", label: "Matriz de Confrontos Fiscais", icon: Grid3x3 },
   { to: "/decision", label: "Decision Engine", icon: Brain },
@@ -19,7 +23,8 @@ const items = [
   { to: "/knowledge-graph", label: "Knowledge Graph", icon: Network },
   { to: "/reports", label: "Relatórios", icon: BarChart3 },
   { to: "/audit-logs", label: "Logs e Auditoria", icon: ShieldCheck },
-  { to: "/admin", label: "Administração", icon: Users2 },
+  { to: "/admin", label: "Administração", icon: Users2, adminOnly: true },
+  { to: "/admin/process-update-engine", label: "Motor Atualizador de Processos", icon: RefreshCw, adminOnly: true },
   { to: "/settings", label: "Configurações", icon: Settings },
 ] as const;
 
