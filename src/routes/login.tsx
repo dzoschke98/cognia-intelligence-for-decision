@@ -7,6 +7,7 @@ import { CogniaLogo } from "@/components/cognia/Sidebar";
 import { login, useStore, useIsClient, getUsers } from "@/lib/cognia/store";
 import { toast } from "sonner";
 import { ArrowRight, Sparkles, ShieldCheck, Brain } from "lucide-react";
+import loginBg from "@/assets/login-bg.jpg";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Entrar — CognIA" }] }),
@@ -54,11 +55,29 @@ function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-screen md:grid-cols-2">
+    <div
+      className="relative grid min-h-screen md:grid-cols-2"
+      style={{
+        backgroundImage: `url(${loginBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Global overlay to keep contrast over the illustration */}
+      <div className="pointer-events-none absolute inset-0 bg-[#070B14]/70" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-70"
+        style={{ background: "radial-gradient(circle at 20% 30%, oklch(0.58 0.22 264 / 0.35), transparent 55%)" }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{ background: "radial-gradient(circle at 85% 80%, oklch(0.55 0.24 295 / 0.35), transparent 55%)" }}
+      />
+
       {/* Left brand panel */}
-      <div className="relative hidden flex-col justify-between overflow-hidden border-r border-white/5 bg-gradient-to-br from-[#0B0F1A] via-[#0d1326] to-[#0B0F1A] p-12 md:flex">
-        <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(circle at 30% 20%, oklch(0.58 0.22 264 / 0.5), transparent 50%)" }} />
-        <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at 80% 80%, oklch(0.55 0.24 295 / 0.5), transparent 50%)" }} />
+      <div className="relative z-10 hidden flex-col justify-between overflow-hidden border-r border-white/5 p-12 md:flex">
+
 
         <div className="relative flex items-center gap-3">
           <CogniaLogo className="h-12 w-12" />
@@ -89,8 +108,8 @@ function LoginPage() {
       </div>
 
       {/* Right form */}
-      <div className="flex items-center justify-center p-6 sm:p-12">
-        <div className="w-full max-w-md space-y-6">
+      <div className="relative z-10 flex items-center justify-center p-6 sm:p-12">
+        <div className="glass-card w-full max-w-md space-y-6 border-white/10 bg-[#0B0F1A]/70 p-8 backdrop-blur-xl">
           <div className="md:hidden">
             <CogniaLogo className="h-10 w-10" />
           </div>

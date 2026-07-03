@@ -54,6 +54,8 @@ function Jurimetry() {
         <Kpi label="Campos pendentes" value={fmt(jurimetryAggregates.pendingFields)} accent="text-warning" />
       </div>
 
+      <JurimetryAiHighlight />
+
       <Tabs defaultValue="overview" onValueChange={(v) => logJurimetry(`jurimetry.tab.${v}.viewed`)}>
         <TabsList className="flex flex-wrap gap-1 bg-white/5">
           <TabsTrigger value="overview">Visão Geral</TabsTrigger>
@@ -64,7 +66,18 @@ function Jurimetry() {
           <TabsTrigger value="unit">Por Unidade</TabsTrigger>
           <TabsTrigger value="phase">Por Fase</TabsTrigger>
           <TabsTrigger value="quality">Qualidade do Cadastro</TabsTrigger>
-          <TabsTrigger value="ai">Sugestões da IA</TabsTrigger>
+          <TabsTrigger
+            value="ai"
+            className="relative gap-1.5 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/30 data-[state=active]:to-cyan/20 data-[state=active]:text-foreground data-[state=active]:shadow-[inset_0_0_0_1px] data-[state=active]:shadow-cyan/40"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-cyan" />
+            Sugestões da IA
+            {jurimetrySuggestions.length > 0 && (
+              <span className="ml-1 grid h-4 min-w-4 place-items-center rounded-full bg-cyan/20 px-1 text-[10px] font-semibold text-cyan">
+                {jurimetrySuggestions.length}
+              </span>
+            )}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
