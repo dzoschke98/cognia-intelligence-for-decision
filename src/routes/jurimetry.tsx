@@ -246,6 +246,55 @@ function Jurimetry() {
 
 function fmt(n: number) { return new Intl.NumberFormat("pt-BR").format(n); }
 
+function JurimetryAiHighlight() {
+  const critical = jurimetrySuggestions.filter((s) => s.priority === "critico" || s.priority === "alto");
+  const totalImpact = jurimetrySuggestions.reduce((s, x) => s + (x.financialImpact || 0), 0);
+  return (
+    <div className="relative overflow-hidden rounded-xl border border-cyan/30 bg-gradient-to-r from-primary/15 via-cyan/10 to-purple/15 p-5">
+      <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-cyan/20 blur-3xl" />
+      <div className="relative flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-lg bg-cyan/20 text-cyan glow-primary">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-cyan">
+              Inteligência CognIA
+              <span className="rounded-full bg-cyan/20 px-1.5 py-0.5 text-[10px] font-semibold text-cyan">
+                {jurimetrySuggestions.length} novas
+              </span>
+            </div>
+            <h3 className="text-lg font-semibold">Sugestões da IA disponíveis</h3>
+            <p className="text-xs text-muted-foreground">
+              A CognIA identificou {jurimetrySuggestions.length} oportunidades de revisão na carteira trabalhista
+              {critical.length > 0 && <>, sendo <span className="text-warning font-medium">{critical.length} de alta prioridade</span></>}.
+              Impacto financeiro estimado: <span className="text-foreground font-medium">{fmtBRL(totalImpact)}</span>.
+            </p>
+          </div>
+        </div>
+        <a href="#ai-suggestions-tab" onClick={(e) => {
+          e.preventDefault();
+          const trigger = document.querySelector<HTMLElement>('[data-value="ai"], [role="tab"][value="ai"]');
+          trigger?.click();
+          document.querySelector('[role="tabpanel"]')?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }}
+          className="inline-flex items-center gap-1.5 rounded-md bg-gradient-to-r from-primary to-purple px-4 py-2 text-sm font-medium text-white shadow-lg hover:opacity-90"
+        >
+          <Sparkles className="h-4 w-4" /> Ver sugestões
+        </a>
+      </div>
+      {critical.length > 0 && (
+        <div className="relative mt-4 flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-2.5 text-xs">
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
+          <span>
+            <span className="font-medium text-warning">Alerta executivo:</span> {critical.length} sugestão(ões) de prioridade alta/crítica exigem validação humana imediata.
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Kpi({ label, value, accent = "" }: { label: string; value: string; accent?: string }) {
   return (
     <div className="glass-card p-4">
