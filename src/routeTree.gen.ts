@@ -23,6 +23,7 @@ import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DecisionRouteImport } from './routes/decision'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuditLogsRouteImport } from './routes/audit-logs'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TaxIndexRouteImport } from './routes/tax.index'
 import { Route as RadarIndexRouteImport } from './routes/radar.index'
@@ -103,6 +104,11 @@ const AuditLogsRoute = AuditLogsRouteImport.update({
   path: '/audit-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -124,9 +130,9 @@ const LegalIndexRoute = LegalIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const TaxIdRoute = TaxIdRouteImport.update({
   id: '/tax/$id',
@@ -145,13 +151,14 @@ const LegalIdRoute = LegalIdRouteImport.update({
 } as any)
 const AdminProcessUpdateEngineRoute =
   AdminProcessUpdateEngineRouteImport.update({
-    id: '/admin/process-update-engine',
-    path: '/admin/process-update-engine',
-    getParentRoute: () => rootRouteImport,
+    id: '/process-update-engine',
+    path: '/process-update-engine',
+    getParentRoute: () => AdminRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
@@ -230,6 +238,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/audit-logs'
     | '/dashboard'
     | '/decision'
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/audit-logs'
     | '/dashboard'
     | '/decision'
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuditLogsRoute: typeof AuditLogsRoute
   DashboardRoute: typeof DashboardRoute
   DecisionRoute: typeof DecisionRoute
@@ -320,11 +331,9 @@ export interface RootRouteChildren {
   TaxConfrontationMatrixRoute: typeof TaxConfrontationMatrixRoute
   ValidationsRoute: typeof ValidationsRoute
   WorkQueueRoute: typeof WorkQueueRoute
-  AdminProcessUpdateEngineRoute: typeof AdminProcessUpdateEngineRoute
   LegalIdRoute: typeof LegalIdRoute
   RadarIdRoute: typeof RadarIdRoute
   TaxIdRoute: typeof TaxIdRoute
-  AdminIndexRoute: typeof AdminIndexRoute
   LegalIndexRoute: typeof LegalIndexRoute
   RadarIndexRoute: typeof RadarIndexRoute
   TaxIndexRoute: typeof TaxIndexRoute
@@ -430,6 +439,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuditLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -460,10 +476,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/tax/$id': {
       id: '/tax/$id'
@@ -488,16 +504,29 @@ declare module '@tanstack/react-router' {
     }
     '/admin/process-update-engine': {
       id: '/admin/process-update-engine'
-      path: '/admin/process-update-engine'
+      path: '/process-update-engine'
       fullPath: '/admin/process-update-engine'
       preLoaderRoute: typeof AdminProcessUpdateEngineRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
   }
 }
 
+interface AdminRouteChildren {
+  AdminProcessUpdateEngineRoute: typeof AdminProcessUpdateEngineRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminProcessUpdateEngineRoute: AdminProcessUpdateEngineRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuditLogsRoute: AuditLogsRoute,
   DashboardRoute: DashboardRoute,
   DecisionRoute: DecisionRoute,
@@ -512,11 +541,9 @@ const rootRouteChildren: RootRouteChildren = {
   TaxConfrontationMatrixRoute: TaxConfrontationMatrixRoute,
   ValidationsRoute: ValidationsRoute,
   WorkQueueRoute: WorkQueueRoute,
-  AdminProcessUpdateEngineRoute: AdminProcessUpdateEngineRoute,
   LegalIdRoute: LegalIdRoute,
   RadarIdRoute: RadarIdRoute,
   TaxIdRoute: TaxIdRoute,
-  AdminIndexRoute: AdminIndexRoute,
   LegalIndexRoute: LegalIndexRoute,
   RadarIndexRoute: RadarIndexRoute,
   TaxIndexRoute: TaxIndexRoute,
