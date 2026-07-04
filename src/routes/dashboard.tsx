@@ -4,6 +4,7 @@ import { useStore } from "@/lib/cognia/store";
 import { fmtBRL, relativeTime } from "@/lib/cognia/format";
 import { RiskBadge } from "@/components/cognia/Badges";
 import { RadarSection } from "@/components/cognia/RadarSection";
+import { OperationsWidgets } from "@/components/cognia/OperationsWidgets";
 import {
   FileText, AlertTriangle, TrendingUp, CheckCircle2, BellRing,
   ShieldCheck, Coins, Timer, ArrowUpRight, Sparkles,
@@ -58,6 +59,8 @@ function Dashboard() {
         <Kpi icon={Coins} label="Custo de IA (mês)" value={`US$ ${aiCost.toFixed(2)}`} accent="from-purple to-primary" />
         <Kpi icon={Timer} label="Tempo médio economizado" value="38h" accent="from-cyan to-success" />
       </div>
+
+      <OperationsWidgets />
 
       <RadarSection />
 
