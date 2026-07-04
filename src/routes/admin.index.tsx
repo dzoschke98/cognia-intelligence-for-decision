@@ -6,7 +6,7 @@ import { getCompanies, useStore } from "@/lib/cognia/store";
 import { Building2, Users, Shield, Cpu, Gauge, BarChart3 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Administração — CognIA" }] }),
   component: () => <AppShell><Admin /></AppShell>,
 });

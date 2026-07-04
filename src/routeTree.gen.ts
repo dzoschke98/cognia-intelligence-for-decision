@@ -23,11 +23,11 @@ import { Route as DocumentsRouteImport } from './routes/documents'
 import { Route as DecisionRouteImport } from './routes/decision'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuditLogsRouteImport } from './routes/audit-logs'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TaxIndexRouteImport } from './routes/tax.index'
 import { Route as RadarIndexRouteImport } from './routes/radar.index'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TaxIdRouteImport } from './routes/tax.$id'
 import { Route as RadarIdRouteImport } from './routes/radar.$id'
 import { Route as LegalIdRouteImport } from './routes/legal.$id'
@@ -103,11 +103,6 @@ const AuditLogsRoute = AuditLogsRouteImport.update({
   path: '/audit-logs',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -128,6 +123,11 @@ const LegalIndexRoute = LegalIndexRouteImport.update({
   path: '/legal/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TaxIdRoute = TaxIdRouteImport.update({
   id: '/tax/$id',
   path: '/tax/$id',
@@ -145,14 +145,13 @@ const LegalIdRoute = LegalIdRouteImport.update({
 } as any)
 const AdminProcessUpdateEngineRoute =
   AdminProcessUpdateEngineRouteImport.update({
-    id: '/process-update-engine',
-    path: '/process-update-engine',
-    getParentRoute: () => AdminRoute,
+    id: '/admin/process-update-engine',
+    path: '/admin/process-update-engine',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
@@ -171,13 +170,13 @@ export interface FileRoutesByFullPath {
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/legal/': typeof LegalIndexRoute
   '/radar/': typeof RadarIndexRoute
   '/tax/': typeof TaxIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
@@ -196,6 +195,7 @@ export interface FileRoutesByTo {
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
+  '/admin': typeof AdminIndexRoute
   '/legal': typeof LegalIndexRoute
   '/radar': typeof RadarIndexRoute
   '/tax': typeof TaxIndexRoute
@@ -203,7 +203,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
   '/audit-logs': typeof AuditLogsRoute
   '/dashboard': typeof DashboardRoute
   '/decision': typeof DecisionRoute
@@ -222,6 +221,7 @@ export interface FileRoutesById {
   '/legal/$id': typeof LegalIdRoute
   '/radar/$id': typeof RadarIdRoute
   '/tax/$id': typeof TaxIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/legal/': typeof LegalIndexRoute
   '/radar/': typeof RadarIndexRoute
   '/tax/': typeof TaxIndexRoute
@@ -230,7 +230,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
     | '/audit-logs'
     | '/dashboard'
     | '/decision'
@@ -249,13 +248,13 @@ export interface FileRouteTypes {
     | '/legal/$id'
     | '/radar/$id'
     | '/tax/$id'
+    | '/admin/'
     | '/legal/'
     | '/radar/'
     | '/tax/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/audit-logs'
     | '/dashboard'
     | '/decision'
@@ -274,13 +273,13 @@ export interface FileRouteTypes {
     | '/legal/$id'
     | '/radar/$id'
     | '/tax/$id'
+    | '/admin'
     | '/legal'
     | '/radar'
     | '/tax'
   id:
     | '__root__'
     | '/'
-    | '/admin'
     | '/audit-logs'
     | '/dashboard'
     | '/decision'
@@ -299,6 +298,7 @@ export interface FileRouteTypes {
     | '/legal/$id'
     | '/radar/$id'
     | '/tax/$id'
+    | '/admin/'
     | '/legal/'
     | '/radar/'
     | '/tax/'
@@ -306,7 +306,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
   AuditLogsRoute: typeof AuditLogsRoute
   DashboardRoute: typeof DashboardRoute
   DecisionRoute: typeof DecisionRoute
@@ -321,9 +320,11 @@ export interface RootRouteChildren {
   TaxConfrontationMatrixRoute: typeof TaxConfrontationMatrixRoute
   ValidationsRoute: typeof ValidationsRoute
   WorkQueueRoute: typeof WorkQueueRoute
+  AdminProcessUpdateEngineRoute: typeof AdminProcessUpdateEngineRoute
   LegalIdRoute: typeof LegalIdRoute
   RadarIdRoute: typeof RadarIdRoute
   TaxIdRoute: typeof TaxIdRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   LegalIndexRoute: typeof LegalIndexRoute
   RadarIndexRoute: typeof RadarIndexRoute
   TaxIndexRoute: typeof TaxIndexRoute
@@ -429,13 +430,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuditLogsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -464,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tax/$id': {
       id: '/tax/$id'
       path: '/tax/$id'
@@ -487,27 +488,16 @@ declare module '@tanstack/react-router' {
     }
     '/admin/process-update-engine': {
       id: '/admin/process-update-engine'
-      path: '/process-update-engine'
+      path: '/admin/process-update-engine'
       fullPath: '/admin/process-update-engine'
       preLoaderRoute: typeof AdminProcessUpdateEngineRouteImport
-      parentRoute: typeof AdminRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface AdminRouteChildren {
-  AdminProcessUpdateEngineRoute: typeof AdminProcessUpdateEngineRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminProcessUpdateEngineRoute: AdminProcessUpdateEngineRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
   AuditLogsRoute: AuditLogsRoute,
   DashboardRoute: DashboardRoute,
   DecisionRoute: DecisionRoute,
@@ -522,9 +512,11 @@ const rootRouteChildren: RootRouteChildren = {
   TaxConfrontationMatrixRoute: TaxConfrontationMatrixRoute,
   ValidationsRoute: ValidationsRoute,
   WorkQueueRoute: WorkQueueRoute,
+  AdminProcessUpdateEngineRoute: AdminProcessUpdateEngineRoute,
   LegalIdRoute: LegalIdRoute,
   RadarIdRoute: RadarIdRoute,
   TaxIdRoute: TaxIdRoute,
+  AdminIndexRoute: AdminIndexRoute,
   LegalIndexRoute: LegalIndexRoute,
   RadarIndexRoute: RadarIndexRoute,
   TaxIndexRoute: TaxIndexRoute,
@@ -532,13 +524,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
