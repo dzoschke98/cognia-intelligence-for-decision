@@ -43,8 +43,8 @@ export function Sidebar() {
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-card/80 backdrop-blur-xl md:flex">
-      <Link to="/dashboard" className="flex flex-col items-start gap-1 px-3 py-5">
-        <img src={cogniaLogo} alt="CognIA" className="w-full h-auto object-contain" />
+      <Link to="/dashboard" className="flex flex-col items-start gap-1 px-5 py-5">
+        <img src={cogniaLogo} alt="CognIA" className="h-10 w-auto object-contain" />
         <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Decision Intelligence</span>
       </Link>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pb-6">
