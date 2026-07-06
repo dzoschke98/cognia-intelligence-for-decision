@@ -337,6 +337,70 @@ export function dismissRadarSuggestion(_updateId: string) {
 export function logRadarImpact(_updateId: string) {
   addLog({ action: "radar.impact.generated", resource: "radar", engine: "radar", engineVersion: "radar-engine-v0.9.0" });
 }
+export function toggleRadarFavorite(id: string) {
+  const item = state.radar.find((r) => r.id === id);
+  const willFav = !item?.favorite;
+  state = { ...state, radar: state.radar.map((r) => r.id === id ? { ...r, favorite: willFav } : r) };
+  addLog({ action: willFav ? "radar.news.favorited" : "radar.news.unfavorited", resource: "radar", engine: "radar", engineVersion: "radar-engine-v0.9.0" });
+  emit();
+  return willFav;
+}
+export function logRadarShareWhatsApp(id: string) {
+  const item = state.radar.find((r) => r.id === id);
+  addLog({ action: "radar.news.shared_whatsapp", resource: `radar:${item?.title ?? id}`, engine: "radar", engineVersion: "radar-engine-v0.9.0", companyId: item?.companyId });
+}
+export function sendRadarToWorkQueue(id: string, kind: import("./types").WorkQueueKind = "sugestao_ia") {
+  const u = state.radar.find((r) => r.id === id);
+  if (!u) return;
+  const item: import("./types").WorkQueueItem = {
+    id: uid("wq"),
+    title: `[Radar] ${u.title}`,
+    kind,
+    area: u.area === "Tributário" || u.area === "Reforma Tributária" ? "tributario" : "juridico",
+    priority: u.relevance,
+    responsible: u.suggestions[0]?.owner ?? null,
+    origin: "decision_engine",
+    status: "aberta",
+    createdAt: new Date().toISOString(),
+    dueDate: new Date(Date.now() + 5 * 86400000).toISOString(),
+    companyId: u.companyId,
+    detail: u.suggestedAction,
+  };
+  state = { ...state, workQueue: [item, ...state.workQueue] };
+  addLog({ action: "radar.sent_to_work_queue", resource: "work_queue", engine: "radar", engineVersion: "radar-engine-v0.9.0", companyId: u.companyId });
+  addLog({ action: "radar.pending_item.created", resource: "work_queue", engine: "radar", engineVersion: "radar-engine-v0.9.0", companyId: u.companyId });
+  emit();
+  return item;
+}
+export function createRadarAgendaEvent(id: string, input: { title: string; date: string; responsible: string; priority: import("./types").RiskLevel; note?: string }) {
+  const u = state.radar.find((r) => r.id === id);
+  if (!u) return;
+  const ev: import("./types").AgendaEvent = {
+    id: uid("ev"),
+    title: input.title,
+    area: u.area === "Tributário" || u.area === "Reforma Tributária" ? "tributario" : "juridico",
+    type: "revisao_minuta",
+    relatedRef: u.title,
+    clientName: getCompany(u.companyId)?.name ?? "—",
+    companyId: u.companyId,
+    date: input.date,
+    time: "09:00",
+    responsible: input.responsible,
+    priority: input.priority,
+    status: "pendente",
+    origin: "decision_engine",
+    atRisk: false,
+    suggestedAction: input.note ?? u.suggestedAction,
+  };
+  state = { ...state, agenda: [ev, ...state.agenda] };
+  addLog({ action: "radar.agenda_event.created", resource: "agenda_event", engine: "radar", engineVersion: "radar-engine-v0.9.0", companyId: u.companyId });
+  emit();
+  return ev;
+}
+export function generateRadarExecutiveSummary(id: string) {
+  const u = state.radar.find((r) => r.id === id);
+  addLog({ action: "radar.executive_summary.generated", resource: `radar:${u?.title ?? id}`, engine: "radar", engineVersion: "radar-engine-v0.9.0", companyId: u?.companyId });
+}
 
 // ===== Jurimetria =====
 export function setPendingStatus(id: string, status: import("./types").JurimetryFieldStatus) {
