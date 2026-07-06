@@ -1,9 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { useStore, currentUser } from "@/lib/cognia/store";
+import cogniaLogo from "@/assets/cognia-logo.png";
 import {
   LayoutDashboard, FileText, Scale, Receipt, Brain, CheckCircle2,
-  Network, BarChart3, ShieldCheck, Settings, Users2, Hexagon, Radar, LineChart, Grid3x3,
+  Network, BarChart3, ShieldCheck, Settings, Users2, Radar, LineChart, Grid3x3,
   RefreshCw, PenSquare, CalendarDays, ListTodo,
 } from "lucide-react";
 
