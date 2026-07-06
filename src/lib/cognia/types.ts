@@ -283,8 +283,8 @@ export interface GraphEdge {
 }
 
 // ===== Radar de Inteligência =====
-export type RadarArea = "Trabalhista" | "Tributário" | "Reforma Tributária" | "Compliance" | "Jurisprudência";
-export type RadarStatus = "novo" | "analisado" | "em_revisao" | "acao_criada";
+export type RadarArea = "Trabalhista" | "Tributário" | "Reforma Tributária" | "Compliance" | "Jurisprudência" | "Regulatório";
+export type RadarStatus = "novo" | "lido" | "analisado" | "em_revisao" | "acao_criada" | "enviado_validacao";
 
 export interface RadarImpactItem {
   kind: "processo" | "documento" | "diagnostico";
@@ -318,6 +318,19 @@ export interface RadarUpdate {
   status: RadarStatus;
   impacts: RadarImpactItem[];
   suggestions: RadarSuggestion[];
+  // Novos campos editoriais (opcionais)
+  tags?: string[];
+  content?: string;
+  author?: string;
+  readingMinutes?: number;
+  impactScore?: number;
+  potentialValue?: number;
+  confidence?: number;
+  urgency?: RiskLevel;
+  recommendations?: string[];
+  validationPoints?: string[];
+  gradient?: string;
+  favorite?: boolean;
 }
 
 // ===== Jurimetria Trabalhista =====
