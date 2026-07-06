@@ -1,9 +1,13 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { AppShell } from "@/components/cognia/AppShell";
-import { useStore, getCompany, createRadarAction, dismissRadarSuggestion, logRadarImpact, setRadarStatus } from "@/lib/cognia/store";
+import {
+  useStore, getCompany, createRadarAction, dismissRadarSuggestion, logRadarImpact, setRadarStatus,
+  toggleRadarFavorite, logRadarShareWhatsApp, sendRadarToWorkQueue, createRadarAgendaEvent, generateRadarExecutiveSummary,
+} from "@/lib/cognia/store";
+import { enrichRadar, whatsAppShareUrl } from "@/lib/cognia/radarEnrich";
 import { RiskBadge } from "@/components/cognia/Badges";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Radar, ShieldCheck, Sparkles, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Radar, ShieldCheck, Sparkles, AlertTriangle, Star, Share2, ListTodo, CalendarDays, FileText } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
