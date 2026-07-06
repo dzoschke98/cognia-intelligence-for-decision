@@ -1,9 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { useStore, currentUser } from "@/lib/cognia/store";
+import cogniaLogo from "@/assets/cognia-logo.png";
 import {
   LayoutDashboard, FileText, Scale, Receipt, Brain, CheckCircle2,
-  Network, BarChart3, ShieldCheck, Settings, Users2, Hexagon, Radar, LineChart, Grid3x3,
+  Network, BarChart3, ShieldCheck, Settings, Users2, Radar, LineChart, Grid3x3,
   RefreshCw, PenSquare, CalendarDays, ListTodo,
 } from "lucide-react";
 
@@ -34,20 +35,21 @@ export function Sidebar() {
     s.legal.filter((a) => a.validationStatus === "pendente").length +
     s.tax.filter((a) => a.validationStatus === "pendente").length,
   );
+
+  const visible = items.filter((it) => !("adminOnly" in it && it.adminOnly) || currentUser()?.role === "Administrador");
+  const bestMatch = visible
+    .filter((i) => path === i.to || path.startsWith(`${i.to}/`))
+    .sort((a, b) => b.to.length - a.to.length)[0];
+
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-card/80 backdrop-blur-xl md:flex">
-      <Link to="/dashboard" className="flex items-center gap-2.5 px-5 py-5">
-        <CogniaLogo className="h-8 w-8" />
-        <div className="flex flex-col leading-tight">
-          <span className="text-lg font-semibold tracking-tight">Cogn<span className="gradient-text">IA</span></span>
-          <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Decision Intelligence</span>
-        </div>
+      <Link to="/dashboard" className="flex flex-col items-start gap-1 px-5 py-5">
+        <img src={cogniaLogo} alt="CognIA" className="h-10 w-auto object-contain" />
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Decision Intelligence</span>
       </Link>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pb-6">
-        {items
-          .filter((it) => !("adminOnly" in it && it.adminOnly) || currentUser()?.role === "Administrador")
-          .map(({ to, label, icon: Icon }) => {
-          const active = path === to || path.startsWith(`${to}/`);
+        {visible.map(({ to, label, icon: Icon }) => {
+          const active = bestMatch?.to === to;
           const isValidations = to === "/validations";
           return (
             <Link key={to} to={to as string}
@@ -77,10 +79,6 @@ export function Sidebar() {
 }
 
 export function CogniaLogo({ className }: { className?: string }) {
-  return (
-    <div className={cn("relative grid place-items-center rounded-xl bg-gradient-to-br from-primary to-purple text-white glow-primary", className)}>
-      <Hexagon className="absolute h-full w-full opacity-30" strokeWidth={1.2} />
-      <span className="text-sm font-bold">C</span>
-    </div>
-  );
+  return <img src={cogniaLogo} alt="CognIA" className={cn("object-contain", className)} />;
 }
+

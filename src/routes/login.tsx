@@ -79,12 +79,9 @@ function LoginPage() {
       <div className="relative z-10 hidden flex-col justify-between overflow-hidden border-r border-white/5 p-12 md:flex">
 
 
-        <div className="relative flex items-center gap-3">
-          <CogniaLogo className="h-12 w-12" />
-          <div>
-            <div className="text-2xl font-bold tracking-tight">Cogn<span className="gradient-text">IA</span></div>
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">Decision Intelligence</div>
-          </div>
+        <div className="relative flex flex-col items-start gap-1">
+          <CogniaLogo className="h-14 w-auto" />
+          <div className="text-xs uppercase tracking-widest text-muted-foreground">Decision Intelligence</div>
         </div>
 
         <div className="relative space-y-6">
@@ -111,7 +108,7 @@ function LoginPage() {
       <div className="relative z-10 flex items-center justify-center p-6 sm:p-12">
         <div className="glass-card w-full max-w-md space-y-6 border-white/10 bg-[#0B0F1A]/70 p-8 backdrop-blur-xl">
           <div className="md:hidden">
-            <CogniaLogo className="h-10 w-10" />
+            <CogniaLogo className="h-10 w-auto" />
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold tracking-tight">Acesso à plataforma</h2>
