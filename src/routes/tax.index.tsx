@@ -151,7 +151,7 @@ function TaxList() {
         items={[
           { label: "Inconsistências", value: fmtBRL(filtered.reduce((s, a) => s + a.inconsistenciesValue, 0)), color: "risk" },
           { label: "Oportunidades", value: fmtBRL(filtered.reduce((s, a) => s + a.opportunitiesValue, 0)), color: "success" },
-          { label: "Pendentes", value: String(filtered.filter((a) => a.validationStatus === "pendente").length), color: "warning" },
+          { label: "Pendentes de validação", value: String(filtered.filter((a) => a.validationStatus === "pendente").length), color: "warning" },
         ]}
       />
     </div>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CogniaLogo } from "@/components/cognia/Sidebar";
+import { CogniaLogo } from "@/components/cognia/CogniaLogo";
 import { login, useStore, useIsClient, getUsers } from "@/lib/cognia/store";
 import { toast } from "sonner";
 import { ArrowRight, Sparkles, ShieldCheck, Brain } from "lucide-react";
@@ -80,7 +80,7 @@ function LoginPage() {
 
 
         <div className="relative flex flex-col items-start gap-1">
-          <CogniaLogo className="h-14 w-auto" />
+          <CogniaLogo variant="dark" className="h-16 w-auto" />
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Decision Intelligence</div>
         </div>
 
@@ -106,9 +106,9 @@ function LoginPage() {
 
       {/* Right form */}
       <div className="relative z-10 flex items-center justify-center p-6 sm:p-12">
-        <div className="glass-card w-full max-w-md space-y-6 border-white/10 bg-[#0B0F1A]/70 p-8 backdrop-blur-xl">
+        <div className="glass-card w-full max-w-md space-y-6 border-white/10 bg-card/80 p-8 backdrop-blur-xl">
           <div className="md:hidden">
-            <CogniaLogo className="h-10 w-auto" />
+            <CogniaLogo variant="dark" className="h-12 w-auto" />
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold tracking-tight">Acesso à plataforma</h2>
