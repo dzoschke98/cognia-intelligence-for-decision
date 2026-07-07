@@ -6,12 +6,15 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  useNavigate,
+  useRouterState,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { useStore, useIsClient } from "@/lib/cognia/store";
 
 function NotFoundComponent() {
   return (
@@ -120,11 +123,35 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const isClient = useIsClient();
+  const session = useStore((s) => s.currentUserEmail);
+  const navigate = useNavigate();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    function syncTheme() {
+      setTheme(document.documentElement.classList.contains("light") ? "light" : "dark");
+    }
+    syncTheme();
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
+
+  // Guard de autenticação: rotas públicas explicitamente listadas
+  useEffect(() => {
+    if (!isClient) return;
+    const publicRoutes = ["/login", "/"];
+    if (!session && !publicRoutes.includes(path)) {
+      navigate({ to: "/login" });
+    }
+  }, [isClient, session, path, navigate]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
-      <Toaster theme="dark" position="top-right" richColors />
+      <Toaster theme={theme} position="top-right" richColors />
     </QueryClientProvider>
   );
 }

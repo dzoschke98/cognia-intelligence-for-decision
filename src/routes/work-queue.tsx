@@ -6,15 +6,35 @@ import { labelForWorkQueueKind, labelForAgendaOrigin } from "@/lib/cognia/operat
 import { fmtDate } from "@/lib/cognia/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from "@/components/ui/dialog";
 import { ListTodo, Search, AlertTriangle } from "lucide-react";
 import { RiskBadge } from "@/components/cognia/Badges";
+import { SummaryFooter } from "@/components/cognia/SummaryFooter";
 import { toast } from "sonner";
+import type { WorkQueueItem } from "@/lib/cognia/types";
 
 export const Route = createFileRoute("/work-queue")({
   head: () => ({ meta: [{ title: "Central de Pendências — CognIA" }] }),
   component: () => <AppShell><WorkQueue /></AppShell>,
 });
+
+function routeForKind(kind: WorkQueueItem["kind"]): string {
+  switch (kind) {
+    case "validacao_humana": return "/validations";
+    case "minuta_revisao": return "/legal-drafts";
+    case "cruzamento_pendente":
+    case "oportunidade_tributaria":
+    case "contingencia_sem_acao": return "/tax-confrontation-matrix";
+    case "prazo_critico": return "/general-agenda";
+    case "movimentacao_nova": return "/admin/process-update-engine";
+    case "sugestao_ia": return "/jurimetry";
+    default: return "/decision";
+  }
+}
 
 function WorkQueue() {
   const items = useStore((s) => s.workQueue);
@@ -22,6 +42,8 @@ function WorkQueue() {
   const [area, setArea] = useState("all");
   const [priority, setPriority] = useState("all");
   const [status, setStatus] = useState("all");
+  const [delegateItem, setDelegateItem] = useState<WorkQueueItem | null>(null);
+  const [delegateName, setDelegateName] = useState("");
   const navigate = useNavigate();
 
   const filtered = useMemo(() => items.filter((i) => {
@@ -43,6 +65,20 @@ function WorkQueue() {
     tax: items.filter((i) => i.area === "tributario").length,
     legal: items.filter((i) => i.area === "juridico").length,
   };
+
+  function openDelegate(item: WorkQueueItem) {
+    setDelegateItem(item);
+    setDelegateName(item.responsible ?? "");
+  }
+  function confirmDelegate() {
+    if (!delegateItem) return;
+    const name = delegateName.trim();
+    if (!name) { toast.error("Informe o responsável"); return; }
+    delegateWorkQueue(delegateItem.id, name);
+    toast.success("Pendência delegada");
+    setDelegateItem(null);
+    setDelegateName("");
+  }
 
   return (
     <div className="space-y-6">
@@ -129,10 +165,20 @@ function WorkQueue() {
                 <td className="px-3 py-2 text-center"><RiskBadge risk={i.priority} /></td>
                 <td className="px-3 py-2 text-center text-[10px] uppercase text-muted-foreground">{i.status.replace("_", " ")}</td>
                 <td className="px-3 py-2 text-right">
-                  <div className="inline-flex gap-1">
-                    <Button size="sm" variant="ghost" className="h-7 text-success" onClick={() => { setWorkQueueStatus(i.id, "concluida"); toast.success("Concluída"); }}>Concluir</Button>
-                    <Button size="sm" variant="ghost" className="h-7 text-cyan" onClick={() => { delegateWorkQueue(i.id, "Comitê CognIA"); toast("Delegada"); }}>Delegar</Button>
-                    <Button size="sm" variant="ghost" className="h-7 text-primary" onClick={() => navigate({ to: "/general-agenda" })}>Abrir na Agenda</Button>
+                  <div className="inline-flex flex-wrap justify-end gap-1">
+                    <Button size="sm" variant="ghost" className="h-7 text-primary"
+                      onClick={() => navigate({ to: routeForKind(i.kind) })}>
+                      Ver
+                    </Button>
+                    {i.status !== "concluida" && (
+                      <Button size="sm" variant="ghost" className="h-7 text-success"
+                        onClick={() => { setWorkQueueStatus(i.id, "concluida"); toast.success("Pendência concluída"); }}>
+                        Concluir
+                      </Button>
+                    )}
+                    <Button size="sm" variant="ghost" className="h-7 text-cyan" onClick={() => openDelegate(i)}>
+                      Delegar
+                    </Button>
                   </div>
                 </td>
               </tr>
@@ -144,10 +190,52 @@ function WorkQueue() {
         </table>
       </div>
 
+      <SummaryFooter
+        recordCount={filtered.length}
+        recordLabel="pendências"
+        items={[
+          { label: "Críticas", value: String(filtered.filter((i) => i.priority === "critico").length), color: "risk" },
+          { label: "Sem responsável", value: String(filtered.filter((i) => !i.responsible).length), color: "warning" },
+          { label: "Concluídas", value: String(filtered.filter((i) => i.status === "concluida").length), color: "success" },
+        ]}
+      />
+
       <div className="flex items-start gap-2 rounded-md border border-cyan/20 bg-cyan/5 p-3 text-xs text-muted-foreground">
         <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan" />
         Pendências consolidam sinais do Motor Atualizador, Jurimetria, Sugestões da IA, Gera Minutas, Malha Fiscal, Matriz de Confronto, Agenda Geral, Decision Engine e Validação Humana.
       </div>
+
+      <Dialog open={!!delegateItem} onOpenChange={(o) => { if (!o) { setDelegateItem(null); setDelegateName(""); } }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delegar pendência</DialogTitle>
+          </DialogHeader>
+          {delegateItem && (
+            <div className="space-y-3">
+              <div className="rounded-md border border-white/10 bg-white/5 p-3 text-xs">
+                <div className="font-medium">{labelForWorkQueueKind(delegateItem.kind)}</div>
+                <div className="mt-1 text-muted-foreground">{delegateItem.detail}</div>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="delegate-name">Responsável</Label>
+                <Input
+                  id="delegate-name"
+                  value={delegateName}
+                  onChange={(e) => setDelegateName(e.target.value)}
+                  placeholder="Nome do responsável"
+                  autoFocus
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => { setDelegateItem(null); setDelegateName(""); }}>Cancelar</Button>
+            <Button className="bg-gradient-to-r from-primary to-purple text-white" onClick={confirmDelegate}>
+              Confirmar delegação
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

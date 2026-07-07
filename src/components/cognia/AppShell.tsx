@@ -19,7 +19,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen">
       <Sidebar />
-      <div className="md:pl-64">
+      <div
+        className="transition-[padding] duration-200 md:pl-[var(--cognia-sidebar-w,16rem)]"
+      >
         <Topbar />
         <main className="p-6">{children}</main>
       </div>
