@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fmtBRL } from "@/lib/cognia/format";
-import { LineChart, BarChart3, ClipboardCheck, Sparkles, Search, ArrowLeft, AlertTriangle, X } from "lucide-react";
+import { LineChart, BarChart3, ClipboardCheck, Sparkles, Search, ArrowLeft, AlertTriangle, X, Scale, Shield } from "lucide-react";
 import { toast } from "sonner";
 import type { JurimetryClaim } from "@/lib/cognia/types";
 
