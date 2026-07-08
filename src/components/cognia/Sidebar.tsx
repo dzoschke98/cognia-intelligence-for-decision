@@ -168,14 +168,9 @@ export function Sidebar() {
       )}
     >
       {/* Cabeçalho / logo */}
-      <div className={cn("flex items-center gap-2 px-3 py-4", collapsed ? "justify-center" : "px-5")}>
-        <Link to="/dashboard" className="flex flex-1 items-center gap-2 overflow-hidden">
-          <CogniaLogo className={cn(collapsed ? "h-8 w-8" : "h-10 w-auto")} />
-          {!collapsed && (
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              Decision Intelligence
-            </span>
-          )}
+      <div className={cn("flex items-center justify-center px-3 py-4", collapsed ? "px-2" : "px-4")}>
+        <Link to="/dashboard" className="flex w-full items-center justify-center overflow-hidden">
+          <CogniaLogo className={cn(collapsed ? "h-9 w-auto" : "h-14 w-auto max-w-full")} />
         </Link>
       </div>
 
