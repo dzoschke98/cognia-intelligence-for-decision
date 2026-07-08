@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fmtBRL } from "@/lib/cognia/format";
-import { LineChart, BarChart3, ClipboardCheck, Sparkles, Search, ArrowLeft, AlertTriangle, X } from "lucide-react";
+import { LineChart, BarChart3, ClipboardCheck, Sparkles, Search, ArrowLeft, AlertTriangle, X, Scale, Shield } from "lucide-react";
 import { toast } from "sonner";
 import type { JurimetryClaim } from "@/lib/cognia/types";
 
@@ -17,15 +17,60 @@ export const Route = createFileRoute("/jurimetry")({
   component: () => <AppShell><Jurimetry /></AppShell>,
 });
 
+type Perspective = "todos" | "ativo" | "passivo";
+
+// deriva peso mockado por claim para simular distribuição ativo/passivo
+function poleShare(claim: string): { ativo: number; passivo: number } {
+  let h = 0;
+  for (let i = 0; i < claim.length; i++) h = (h * 31 + claim.charCodeAt(i)) >>> 0;
+  const ativo = 0.15 + ((h % 55) / 100); // 15%..70%
+  return { ativo, passivo: 1 - ativo };
+}
+
 function Jurimetry() {
   const pendings = useStore((s) => s.pendings);
   const [selected, setSelected] = useState<JurimetryClaim | null>(null);
   const [filter, setFilter] = useState("");
+  const [perspective, setPerspective] = useState<Perspective>("todos");
+
+  const perspectiveClaims = useMemo(() => {
+    if (perspective === "todos") return jurimetryClaims;
+    return jurimetryClaims.map((c) => {
+      const share = poleShare(c.claim)[perspective];
+      const count = Math.max(1, Math.round(c.count * share));
+      // pequenos ajustes de tese: ativo -> mais êxito, passivo -> mais defesa
+      const bias = perspective === "ativo" ? 1.08 : 0.92;
+      return {
+        ...c,
+        count,
+        successPct: Math.min(99, Math.round(c.successPct * bias)),
+        agreementPct: c.agreementPct,
+        convictionPct: Math.max(0, Math.round(c.convictionPct * (perspective === "ativo" ? 0.85 : 1.15))),
+        avgAgreement: Math.round(c.avgAgreement * (perspective === "ativo" ? 1.05 : 0.95)),
+        avgConviction: Math.round(c.avgConviction * (perspective === "ativo" ? 0.9 : 1.1)),
+      } as JurimetryClaim;
+    });
+  }, [perspective]);
 
   const filteredClaims = useMemo(
-    () => jurimetryClaims.filter((c) => c.claim.toLowerCase().includes(filter.toLowerCase())),
-    [filter]
+    () => perspectiveClaims.filter((c) => c.claim.toLowerCase().includes(filter.toLowerCase())),
+    [filter, perspectiveClaims]
   );
+
+  const totals = useMemo(() => {
+    const claims = perspectiveClaims.reduce((s, c) => s + c.count, 0);
+    const wSum = perspectiveClaims.reduce((s, c) => s + c.count, 0) || 1;
+    const wAvg = (k: keyof JurimetryClaim) =>
+      Math.round(perspectiveClaims.reduce((s, c) => s + (c[k] as number) * c.count, 0) / wSum);
+    return {
+      claims,
+      successPct: wAvg("successPct"),
+      agreementPct: wAvg("agreementPct"),
+      convictionPct: wAvg("convictionPct"),
+      avgAgreement: wAvg("avgAgreement"),
+      avgConviction: wAvg("avgConviction"),
+    };
+  }, [perspectiveClaims]);
 
   return (
     <div className="space-y-6">
@@ -42,14 +87,56 @@ function Jurimetry() {
         </div>
       </div>
 
+      {/* Perspectiva Ativo/Passivo */}
+      <div className="glass-card flex flex-wrap items-center justify-between gap-3 p-3">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Scale className="h-3.5 w-3.5 text-cyan" />
+          <span>Perspectiva do cliente:</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {(
+            [
+              { id: "todos", label: "Todos", icon: BarChart3 },
+              { id: "ativo", label: "Polo ativo (autor)", icon: Sparkles },
+              { id: "passivo", label: "Polo passivo (réu)", icon: Shield },
+            ] as { id: Perspective; label: string; icon: typeof BarChart3 }[]
+          ).map((p) => {
+            const active = perspective === p.id;
+            const Icon = p.icon;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => {
+                  setPerspective(p.id);
+                  logJurimetry(`jurimetry.perspective.${p.id}.selected`);
+                }}
+                className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs transition ${
+                  active
+                    ? "border-cyan/40 bg-cyan/15 text-cyan shadow-[inset_0_0_0_1px] shadow-cyan/40"
+                    : "border-white/10 bg-white/5 text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" /> {p.label}
+              </button>
+            );
+          })}
+        </div>
+        <div className="w-full text-[11px] text-muted-foreground">
+          {perspective === "todos" && "Visão consolidada da carteira. Tese padrão: análise híbrida com foco em risco."}
+          {perspective === "ativo" && "Foco em teses iniciais, pedidos formulados e recuperação estimada como autor."}
+          {perspective === "passivo" && "Foco em tese defensiva, contestação e mitigação de risco de condenação."}
+        </div>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <Kpi label="Processos analisados" value={fmt(jurimetryAggregates.processes)} />
-        <Kpi label="Pedidos extraídos" value={fmt(jurimetryAggregates.claims)} />
-        <Kpi label="Taxa de êxito" value={`${jurimetryAggregates.successPct}%`} accent="text-success" />
-        <Kpi label="Taxa de acordo" value={`${jurimetryAggregates.agreementPct}%`} accent="text-cyan" />
-        <Kpi label="Taxa de condenação" value={`${jurimetryAggregates.convictionPct}%`} accent="text-risk" />
-        <Kpi label="Ticket médio de acordo" value={fmtBRL(jurimetryAggregates.avgAgreement)} />
-        <Kpi label="Ticket médio de condenação" value={fmtBRL(jurimetryAggregates.avgConviction)} />
+        <Kpi label={perspective === "todos" ? "Pedidos extraídos" : `Pedidos (${perspective})`} value={fmt(totals.claims)} />
+        <Kpi label="Taxa de êxito" value={`${perspective === "todos" ? jurimetryAggregates.successPct : totals.successPct}%`} accent="text-success" />
+        <Kpi label="Taxa de acordo" value={`${perspective === "todos" ? jurimetryAggregates.agreementPct : totals.agreementPct}%`} accent="text-cyan" />
+        <Kpi label="Taxa de condenação" value={`${perspective === "todos" ? jurimetryAggregates.convictionPct : totals.convictionPct}%`} accent="text-risk" />
+        <Kpi label={perspective === "ativo" ? "Ticket médio pleiteado" : "Ticket médio de acordo"} value={fmtBRL(perspective === "todos" ? jurimetryAggregates.avgAgreement : totals.avgAgreement)} />
+        <Kpi label="Ticket médio de condenação" value={fmtBRL(perspective === "todos" ? jurimetryAggregates.avgConviction : totals.avgConviction)} />
         <Kpi label="Qualidade do cadastro" value={`${jurimetryAggregates.qualityPct}%`} accent="text-success" />
         <Kpi label="Campos pendentes" value={fmt(jurimetryAggregates.pendingFields)} accent="text-warning" />
       </div>
